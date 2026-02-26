@@ -124,4 +124,41 @@ public class OrderService {
         }
         return responseList;
     }
+
+    public OrderResponseDTO getOrderDetails(Long orderId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (!order.getUser().getId().equals(user.getId())){
+            throw new RuntimeException("You are not authorized to view this order");
+        }
+
+        List<OrderItemEntity> items = orderItemRepository.findByOrder(order);
+        List<OrderItemResponseDTO> itemDTOs = new ArrayList<>();
+
+        for (OrderItemEntity item : items) {
+            OrderItemResponseDTO itemDTO = OrderItemResponseDTO.builder()
+                    .productId(item.getProductId())
+                    .productName(item.getProductName())
+                    .priceAtPurchase(item.getPriceAtPurchase())
+                    .quantity(item.getQuantity())
+                    .totalPrice(item.getTotalPrice())
+                    .build();
+            itemDTOs.add(itemDTO);
+        }
+        return OrderResponseDTO.builder()
+                .orderId(order.getId())
+                .totalAmount(order.getTotalAmount())
+                .status(order.getStatus())
+                .createdAt(order.getCreatedAt())
+                .items(itemDTOs)
+                .build();
+    }
+
 }
