@@ -27,4 +27,9 @@ public class CartController {
         return cartService.getCart();
     }
 
+    @PutMapping("/update")
+    public void updateQuantity(@RequestParam Long productId, @RequestParam Integer quantity){
+        cartService.updateQuantity(productId, quantity);
+    }
+
 }
