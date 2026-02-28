@@ -28,6 +28,7 @@ public class CartController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('USER')")
     public void updateQuantity(@RequestParam Long productId, @RequestParam Integer quantity){
         cartService.updateQuantity(productId, quantity);
     }
