@@ -6,29 +6,51 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([])
   const [totalAmount, setTotalAmount] = useState(0)
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try{
-        const token = localStorage.getItem("token")
-        const response = await axios.get(
-          "http://localhost:8080/cart",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+  const fetchCartItems = async () => {
+    try{
+      const token = localStorage.getItem("token")
+      const response = await axios.get(
+        "http://localhost:8080/cart",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        )
+        }
+      )
 
-        console.log("Cart items fetched successfully:", response.data)
+      console.log("Cart items fetched successfully:", response.data)
 
-        setCartItems(response.data.cartItems)
-        setTotalAmount(response.data.totalCartAmount)
-      }catch(error){
-        console.log("Failed to fetch cart items:", error.response?.data || error.message)
-      } 
-    }
+      setCartItems(response.data.cartItems)
+      setTotalAmount(response.data.totalCartAmount)
+    }catch(error){
+      console.log("Failed to fetch cart items:", error.response?.data || error.message)
+    } 
+  }
+
+  useEffect(() => {
+    
     fetchCartItems()
+
   }, [])
+
+  const updateQuantity = async (productId, newQuantity) => {
+    try {
+      const token = localStorage.getItem("token")
+      await axios.put(
+        `http://localhost:8080/cart/update?productId=${productId}&quantity=${newQuantity}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+      await fetchCartItems()
+    } catch (error) {
+      console.log("Failed to update cart item quantity:", error.response?.data || error.message)
+      alert("Failed to update cart item quantity. Please try again.")
+    }
+  }
 
   return (
     <div style={{ padding: "20px" }}>
@@ -42,7 +64,11 @@ const Cart = () => {
             <div key={item.productId} style={{ marginBottom: "10px"}}>
               <p><strong>{item.productName}</strong></p>
               <p>Price: ₹{item.price}</p>
-              <p>Quantity: {item.quantity}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}>-</button>
+                <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}>+</button>
+              </div>
               <p>Subtotal: ₹{item.price * item.quantity}</p>
             </div>
           ))}
