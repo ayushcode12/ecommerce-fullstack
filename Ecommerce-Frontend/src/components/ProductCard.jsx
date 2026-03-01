@@ -1,54 +1,76 @@
-import axios from 'axios'
+import api from '../api/axiosInstance'
+import toast from 'react-hot-toast'
+import { useState } from 'react'
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, refreshCartCount }) => {
+
+  const [Loading , setLoading] = useState(false)
 
   const handleAddToCart = async () => {
+
+    setLoading(true)
     try {
-      const token = localStorage.getItem("token")
-      await axios.post(
-        `http://localhost:8080/cart/add?productId=${product.id}&quantity=1`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-      alert("Product added to cart!")
+      await api.post(`/cart/add?productId=${product.id}&quantity=1`)
+      toast.success("Product added to cart!")
+      await refreshCartCount()
     } catch (error) {
       console.log("Failed to add product to cart:", error.response?.data || error.message)
-      alert("Failed to add product to cart. Please try again.")
+      toast.error("Failed to add product to cart. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        padding: "15px",
-        borderRadius: "8px",
-        backgroundColor: "#ffffff",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        color: "#000000"
-      }}
-    >
-      <h3>{product.name}</h3>
-      <p>{product.description}</p>
-      <p><strong>Price:</strong> ₹{product.price}</p>
-      <p><strong>Category:</strong> {product.categoryName}</p>
-      <button
-        onClick={handleAddToCart}
-        style={{
-          marginTop: "10px",
-          padding: "8px",
-          backgroundColor: "#1abc9c",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Add to Cart
-      </button>
+    <div className="group bg-white rounded-2xl p-6 shadow-md border border-slate-200 
+                    transition-all duration-500 
+                    hover:-translate-y-3 hover:shadow-2xl hover:border-emerald-300">
+
+      {/* Top Section */}
+      <div className="space-y-4">
+
+        {/* Category Badge */}
+        <span className="inline-block bg-slate-100 text-slate-600 text-xs font-medium px-3 py-1 rounded-full">
+          {product.categoryName}
+        </span>
+
+        {/* Product Name */}
+        <h3 className="text-xl font-bold text-slate-900 leading-snug">
+          {product.name}
+        </h3>
+
+        {/* Description */}
+        <p className="text-slate-600 text-sm leading-relaxed line-clamp-3">
+          {product.description}
+        </p>
+
+      </div>
+
+      {/* Bottom Section */}
+      <div className="mt-8 flex items-center justify-between">
+
+        {/* Price */}
+        <div>
+          <p className="text-2xl font-bold text-emerald-600">
+            ₹{product.price}
+          </p>
+        </div>
+
+        {/* Add Button */}
+        <button
+          disabled={Loading}
+          onClick={handleAddToCart}
+          className={`px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 shadow-md ${
+            Loading
+              ? "bg-slate-400 cursor-not-allowed"
+              : "bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg"
+          }`}
+        >
+          {Loading ? "Adding..." : "Add"}
+        </button>
+
+      </div>
+
     </div>
   )
 }

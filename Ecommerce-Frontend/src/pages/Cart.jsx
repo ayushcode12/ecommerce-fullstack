@@ -1,23 +1,20 @@
+ 
 import{ useEffect, useState } from 'react'
-import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import api from '../api/axiosInstance'
+import toast from "react-hot-toast"
 
-const Cart = () => {
+const Cart = ({refreshCartCount}) => {
 
   const [cartItems, setCartItems] = useState([])
   const [totalAmount, setTotalAmount] = useState(0)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+
+  const navigate = useNavigate()
 
   const fetchCartItems = async () => {
     try{
-      const token = localStorage.getItem("token")
-      const response = await axios.get(
-        "http://localhost:8080/cart",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-
+      const response = await api.get("/cart")
       console.log("Cart items fetched successfully:", response.data)
 
       setCartItems(response.data.cartItems)
@@ -28,27 +25,31 @@ const Cart = () => {
   }
 
   useEffect(() => {
-    
     fetchCartItems()
-
   }, [])
 
   const updateQuantity = async (productId, newQuantity) => {
     try {
-      const token = localStorage.getItem("token")
-      await axios.put(
-        `http://localhost:8080/cart/update?productId=${productId}&quantity=${newQuantity}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
+      await api.put(`cart/update?productId=${productId}&quantity=${newQuantity}`)
       await fetchCartItems()
+      await refreshCartCount()
     } catch (error) {
       console.log("Failed to update cart item quantity:", error.response?.data || error.message)
-      alert("Failed to update cart item quantity. Please try again.")
+      toast.error("Failed to update cart item quantity. Please try again.")
+    }
+  }
+
+  const handleCheckout = async () => {
+    try {
+      await api.post("/orders/checkout")
+      toast.success("Checkout successful!")
+      await refreshCartCount()
+      navigate("/orders")
+    } catch (error) {
+      console.log("Failed to checkout:", error.response?.data || error.message)
+      toast.error("Failed to checkout. Please try again.")
+    } finally {
+      setCheckoutLoading(false)
     }
   }
 
@@ -74,6 +75,20 @@ const Cart = () => {
           ))}
 
           <h3>Total Amount: ₹{totalAmount}</h3>
+
+          <button 
+            disabled={checkoutLoading}
+            onClick={handleCheckout} 
+            style={{ 
+              padding: "10px", 
+              backgroundColor: checkoutLoading ? "#95a5a6" : "#1abc9c", 
+              border: "none", 
+              borderRadius: "4px", 
+              cursor: "pointer" 
+            }}
+          >
+            {checkoutLoading ? "Processing..." : "Checkout"}
+          </button>
         </>
       )}
     </div>

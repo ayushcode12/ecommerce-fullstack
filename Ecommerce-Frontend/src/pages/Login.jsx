@@ -1,6 +1,7 @@
-import axios from 'axios'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../api/axiosInstance'
+import toast from 'react-hot-toast'
 
 const Login = () => {
   const [email, setEmail] = useState("")
@@ -11,8 +12,8 @@ const Login = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/auth/login",
+      const response = await api.post(
+        "/auth/login",
         {
           email: email,
           password: password
@@ -26,8 +27,11 @@ const Login = () => {
       navigate("/")
 
       console.log("Token stored successfully")
+      toast.success("Login successful!")
+
     } catch (error) {
       console.log("Login failed:", error.response?.data || error.message)
+      toast.error("Login failed. Please check your credentials and try again.")
     }
   }
 
