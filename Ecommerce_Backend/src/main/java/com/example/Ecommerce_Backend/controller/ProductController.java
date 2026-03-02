@@ -29,6 +29,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts(page, size, sortBy, direction, keyword, categoryId));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO request){

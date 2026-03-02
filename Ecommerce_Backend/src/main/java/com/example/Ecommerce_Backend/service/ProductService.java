@@ -82,11 +82,31 @@ public class ProductService {
             .build();
     }
 
+    public ProductResponseDTO getProductById(Long id) {
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return mapToResponseDTO(product);
+    }
+
     public void deleteProduct(Long id) {
         if(!productRepository.existsById(id)){
             throw new RuntimeException("Product not found");
         }
         productRepository.deleteById(id);
+    }
+
+    private ProductResponseDTO mapToResponseDTO(ProductEntity product) {
+
+        return ProductResponseDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .stockQuantity(product.getStockQuantity())
+                .imageUrl(product.getImageUrl())
+                .categoryName(product.getCategory().getName())
+                .build();
     }
 
 }

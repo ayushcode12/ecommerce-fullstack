@@ -23,6 +23,12 @@ const HomePage = () => {
     fetchFeatured()
   }, [])
 
+  const categories = [
+    { id: 1, name: "Cleaning Liquids" },
+    { id: 2, name: "Bathroom Cleaners" },
+    { id: 3, name: "Kitchen Cleaners" }
+  ]
+
   return (
     <div className="animate-fadeIn">
       <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-100 to-slate-200">
@@ -58,9 +64,9 @@ const HomePage = () => {
           FREE SHIPPING on orders above ₹499
         </div>
 
-        {/* FEATURES */}
         <div className="max-w-[1600px] mx-auto px-8 py-24 space-y-24">
 
+          {/* FEATURES */}
           <section className="bg-slate-50 rounded-3xl p-14 grid grid-cols-1 md:grid-cols-3 gap-10 shadow-inner">
             {[
               { title: "Fast Delivery", desc: "Quick shipping across India." },
@@ -75,6 +81,32 @@ const HomePage = () => {
                 <p className="text-slate-600">{feature.desc}</p>
               </div>
             ))}
+          </section>
+
+          {/* CATEGORIES SECTION */}
+          <section className="space-y-12">
+            <div className="text-center">
+              <h2 className="text-4xl font-bold text-slate-800">
+                Shop by Category
+              </h2>
+              <p className="text-slate-600 mt-2">
+                Explore our specialized cleaning collections.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+              {categories.map((category) => (
+                <div
+                  key={category.id}
+                  onClick={() => navigate(`/category/${category.id}`)}
+                  className="bg-white p-16 rounded-3xl shadow-md border border-slate-200 cursor-pointer transition-all duration-500 hover:shadow-xl hover:-translate-y-3 hover:border-emerald-300 text-center"
+                >
+                  <h3 className="text-2xl font-semibold text-slate-800">
+                    {category.name}
+                  </h3>
+                </div>
+              ))}
+            </div>
           </section>
 
           {/* FEATURED PRODUCTS */}

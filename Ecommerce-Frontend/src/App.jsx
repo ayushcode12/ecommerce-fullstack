@@ -1,98 +1,85 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import Navbar from './components/Navbar'
 import Login from './pages/Login'
-import HomePage from './pages/HomePage'
+import Register from './pages/Register'
 import Products from './pages/Products'
-import ProtectedRoute from './auth/ProtectedRoute'
+import HomePage from './pages/HomePage'
 import Cart from './pages/Cart'
 import Orders from './pages/Orders'
 import OrderDetails from './pages/OrderDetails'
-import { Routes, Route } from 'react-router-dom'
+import ProductDetails from './pages/ProductDetails'
+import ProtectedRoute from './auth/ProtectedRoute'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState, useEffect } from "react"
 import api from "./api/axiosInstance"
 import { Toaster } from "react-hot-toast"
+import Footer from "./components/Footer"
 
 function App() {
+
+  const location = useLocation()
+
+  const hideNavbarRoutes = ["/login", "/register"]
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname)
 
   const [cartCount, setCartCount] = useState(0)
 
   const refreshCartCount = async () => {
-    const token = localStorage.getItem("token")
-
-    // If not logged in, reset cart count safely
-    if (!token) {
-      setCartCount(0)
-      return
-    }
-
     try {
       const response = await api.get("/cart")
-
       const totalQuantity = response.data.cartItems.reduce(
         (sum, item) => sum + item.quantity,
         0
       )
-
       setCartCount(totalQuantity)
     } catch (error) {
       console.log("Failed to refresh cart count", error)
-      setCartCount(0)
     }
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshCartCount()
   }, [])
 
   return (
     <div>
-      <Navbar cartCount={cartCount} />
-
+      {!shouldHideNavbar && <Navbar cartCount={cartCount} />}
       <Toaster position="top-right" />
 
       <Routes>
 
-        {/* PUBLIC ROUTES */}
-        <Route path='/' element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        <Route 
-          path='/products' 
-          element={
-            <Products refreshCartCount={refreshCartCount} />
-          } 
-        />
-
-        <Route path='/login' element={<Login />} />
-
-        {/* PROTECTED ROUTES */}
-        <Route
-          path='/cart'
-          element={
-            <ProtectedRoute>
-              <Cart refreshCartCount={refreshCartCount} />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<HomePage />} />
 
         <Route
-          path='/orders'
-          element={
-            <ProtectedRoute>
-              <Orders />
-            </ProtectedRoute>
-          }
+          path="/products"
+          element={<Products refreshCartCount={refreshCartCount} />}
         />
 
-        <Route
-          path="/orders/:orderId"
-          element={
-            <ProtectedRoute>
-              <OrderDetails />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/product/:id" element={<ProductDetails refreshCartCount={refreshCartCount} />} />
+
+        <Route path="/cart" element={
+          <ProtectedRoute>
+            <Cart refreshCartCount={refreshCartCount} />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/orders" element={
+          <ProtectedRoute>
+            <Orders />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/orders/:orderId" element={
+          <ProtectedRoute>
+            <OrderDetails />
+          </ProtectedRoute>
+        } />
 
       </Routes>
+      {!shouldHideNavbar && <Footer />}
     </div>
   )
 }
