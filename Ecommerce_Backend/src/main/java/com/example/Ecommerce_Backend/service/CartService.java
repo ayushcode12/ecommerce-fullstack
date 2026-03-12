@@ -2,6 +2,8 @@ package com.example.Ecommerce_Backend.service;
 
 import com.example.Ecommerce_Backend.dto.CartItemResponseDTO;
 import com.example.Ecommerce_Backend.dto.CartResponseDTO;
+import com.example.Ecommerce_Backend.exception.BadRequestException;
+import com.example.Ecommerce_Backend.exception.ResourceNotFoundException;
 import com.example.Ecommerce_Backend.model.CartEntity;
 import com.example.Ecommerce_Backend.model.CartItemEntity;
 import com.example.Ecommerce_Backend.model.ProductEntity;
@@ -32,15 +34,15 @@ public class CartService {
         String email = authentication.getName();
 
         UserEntity user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         ProductEntity product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        if (quantity <= 0) throw new RuntimeException("Quantity must be greater than zero");
+        if (quantity <= 0) throw new BadRequestException("Quantity must be greater than zero");
 
         if (quantity > product.getStockQuantity()) {
-            throw new RuntimeException("Quantity must be less than or equal to stock quantity");
+            throw new BadRequestException("Quantity must be less than or equal to stock quantity");
         }
 
         CartEntity cart = cartRepository.findByUser(user)
@@ -56,7 +58,7 @@ public class CartService {
             int newQuantity = cartItem.get().getQuantity() + quantity;
 
             if (newQuantity > product.getStockQuantity()) {
-                throw new RuntimeException("Quantity must be less than or equal to stock quantity");
+                throw new BadRequestException("Quantity must be less than or equal to stock quantity");
             }
             cartItem.get().setQuantity(newQuantity);
             cartItemRepository.save(cartItem.get());
@@ -74,7 +76,7 @@ public class CartService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserEntity user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Optional<CartEntity> optionalCart = cartRepository.findByUser(user);
         if(optionalCart.isEmpty()){
@@ -115,23 +117,27 @@ public class CartService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserEntity user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         CartEntity cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
 
         ProductEntity product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         CartItemEntity cartItem = cartItemRepository.findByCartAndProduct(cart, product)
-                .orElseThrow(() -> new RuntimeException("CartItem not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart item not found"));
 
-        if(quantity < 0) throw  new RuntimeException();
+        if(quantity < 0) {
+            throw new BadRequestException("Quantity cannot be negative");
+        }
         if(quantity == 0){
             cartItemRepository.delete(cartItem);
             return;
         }
-        if(quantity > product.getStockQuantity()) throw new RuntimeException();
+        if(quantity > product.getStockQuantity()) {
+            throw new BadRequestException("Quantity must be less than or equal to stock quantity");
+        }
 
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);

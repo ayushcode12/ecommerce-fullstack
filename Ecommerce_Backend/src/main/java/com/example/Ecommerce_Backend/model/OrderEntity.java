@@ -27,9 +27,46 @@ public class OrderEntity {
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
+    @Column
+    private BigDecimal subTotalAmount;
+
+    @Column
+    private BigDecimal shippingAmount;
+
+    @Column
+    private BigDecimal platformFeeAmount;
+
+    @Column
+    private BigDecimal taxAmount;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
+
+    @Column
+    private String shippingFullName;
+
+    @Column
+    private String shippingPhone;
+
+    @Column
+    private String shippingLine1;
+
+    private String shippingLine2;
+
+    @Column
+    private String shippingCity;
+
+    @Column
+    private String shippingState;
+
+    @Column
+    private String shippingPostalCode;
+
+    private String shippingLandmark;
+
+    @Column
+    private String shippingLabel;
 
     private LocalDateTime createdAt;
 

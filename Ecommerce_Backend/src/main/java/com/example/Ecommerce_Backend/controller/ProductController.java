@@ -3,6 +3,7 @@ package com.example.Ecommerce_Backend.controller;
 import com.example.Ecommerce_Backend.dto.ProductRequestDTO;
 import com.example.Ecommerce_Backend.dto.ProductResponseDTO;
 import com.example.Ecommerce_Backend.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -36,11 +37,21 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO request){
+    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductRequestDTO request){
 
         ProductResponseDTO response = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductResponseDTO> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductRequestDTO request
+    ) {
+        ProductResponseDTO response = productService.updateProduct(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

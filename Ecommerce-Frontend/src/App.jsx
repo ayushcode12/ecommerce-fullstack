@@ -7,6 +7,8 @@ import Cart from './pages/Cart'
 import Orders from './pages/Orders'
 import OrderDetails from './pages/OrderDetails'
 import ProductDetails from './pages/ProductDetails'
+import CategoryPage from './pages/CategoryPage'
+import AddAddress from './pages/AddAddress'
 import ProtectedRoute from './auth/ProtectedRoute'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState, useEffect } from "react"
@@ -22,23 +24,44 @@ function App() {
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname)
 
   const [cartCount, setCartCount] = useState(0)
+  const [cartQuantities, setCartQuantities] = useState({})
 
   const refreshCartCount = async () => {
     try {
       const response = await api.get("/cart")
-      const totalQuantity = response.data.cartItems.reduce(
+      const cartItems = response.data.cartItems || []
+
+      const totalQuantity = cartItems.reduce(
         (sum, item) => sum + item.quantity,
         0
       )
+
+      const quantityMap = cartItems.reduce((acc, item) => {
+        acc[item.productId] = item.quantity
+        return acc
+      }, {})
+
       setCartCount(totalQuantity)
+      setCartQuantities(quantityMap)
     } catch (error) {
       console.log("Failed to refresh cart count", error)
+      setCartCount(0)
+      setCartQuantities({})
     }
   }
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshCartCount()
+  }, [])
+
+  useEffect(() => {
+    const handleAuthChanged = () => {
+      refreshCartCount()
+    }
+
+    window.addEventListener("auth-changed", handleAuthChanged)
+    return () => window.removeEventListener("auth-changed", handleAuthChanged)
   }, [])
 
   return (
@@ -51,11 +74,33 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <HomePage
+              refreshCartCount={refreshCartCount}
+              cartQuantities={cartQuantities}
+            />
+          }
+        />
+        <Route
+          path="/category/:id"
+          element={
+            <CategoryPage
+              refreshCartCount={refreshCartCount}
+              cartQuantities={cartQuantities}
+            />
+          }
+        />
 
         <Route
           path="/products"
-          element={<Products refreshCartCount={refreshCartCount} />}
+          element={
+            <Products
+              refreshCartCount={refreshCartCount}
+              cartQuantities={cartQuantities}
+            />
+          }
         />
 
         <Route path="/product/:id" element={<ProductDetails refreshCartCount={refreshCartCount} />} />
@@ -75,6 +120,18 @@ function App() {
         <Route path="/orders/:orderId" element={
           <ProtectedRoute>
             <OrderDetails />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/addresses/new" element={
+          <ProtectedRoute>
+            <AddAddress />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/addresses/:addressId/edit" element={
+          <ProtectedRoute>
+            <AddAddress />
           </ProtectedRoute>
         } />
 

@@ -29,6 +29,11 @@ public class UserEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Column(length = 512)
+    private String refreshTokenHash;
+
+    private LocalDateTime refreshTokenExpiresAt;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

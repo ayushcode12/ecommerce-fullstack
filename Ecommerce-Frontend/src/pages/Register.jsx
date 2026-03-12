@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import { UserPlus } from "lucide-react"
 import api from "../api/axiosInstance"
 import toast from "react-hot-toast"
 
 const Register = () => {
-
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
@@ -17,36 +17,27 @@ const Register = () => {
   const [errors, setErrors] = useState({})
 
   const validate = () => {
-    const newErrors = {}
+    const nextErrors = {}
 
-    if (!form.name.trim()) newErrors.name = "Name is required"
+    if (!form.name.trim()) nextErrors.name = "Name is required"
+    if (!form.email.includes("@")) nextErrors.email = "Enter a valid email"
+    if (form.password.length < 6) nextErrors.password = "Password must be at least 6 characters"
 
-    if (!form.email.includes("@"))
-      newErrors.email = "Enter valid email"
-
-    if (form.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters"
-
-    setErrors(newErrors)
-
-    return Object.keys(newErrors).length === 0
+    setErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (event) => {
+    event.preventDefault()
 
     if (!validate()) return
 
     try {
       setLoading(true)
-
       await api.post("/auth/register", form)
-
-      toast.success("Account created successfully!")
+      toast.success("Account created successfully")
       navigate("/login")
-
-    // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+    } catch {
       toast.error("Registration failed")
     } finally {
       setLoading(false)
@@ -54,80 +45,80 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
+    <div className="relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br from-slate-900 via-teal-900 to-cyan-900 px-4 py-4 md:px-6 md:py-6">
+      <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-teal-300/25 blur-3xl" />
+      <div className="absolute -right-24 bottom-8 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
 
-      <div className="absolute w-[400px] h-[400px] bg-emerald-500 opacity-20 blur-3xl rounded-full animate-pulse"></div>
-
-      <div className="relative bg-white w-full max-w-md p-10 rounded-3xl shadow-2xl space-y-8">
-
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold text-slate-800">
-            Create Account
-          </h2>
-          <p className="text-slate-500">
-            Join us and start shopping
-          </p>
+      <div className="relative mx-auto grid w-full max-w-7xl overflow-hidden rounded-[2rem] border border-white/20 bg-white/95 shadow-2xl lg:min-h-[78vh] lg:grid-cols-2">
+        <div className="hidden bg-gradient-to-br from-cyan-700 to-teal-700 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-100">Create account</p>
+          <div>
+            <h1 className="mt-4 font-display text-5xl font-bold leading-tight">Start smarter shopping today.</h1>
+            <p className="mt-4 max-w-md text-base text-cyan-50">
+              Register once to save addresses, place orders quickly, and track every purchase.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/25 bg-white/10 p-4 text-sm text-cyan-50">
+            Fast signup experience with professional checkout-ready flow.
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex flex-col justify-center p-6 md:p-10 lg:p-12">
+          <h2 className="font-display text-3xl font-bold text-slate-900">Register</h2>
+          <p className="mt-2 text-sm text-slate-600">Create your Home Chemicals account.</p>
 
-          {/* Name */}
-          <div>
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
-            />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-          </div>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <label className="field-group">
+              <span>Full Name</span>
+              <input
+                type="text"
+                placeholder="John Sharma"
+                value={form.name}
+                onChange={(event) => setForm({ ...form, name: event.target.value })}
+                className="field-input"
+              />
+              {errors.name && <small className="field-error">{errors.name}</small>}
+            </label>
 
-          {/* Email */}
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
+            <label className="field-group">
+              <span>Email</span>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(event) => setForm({ ...form, email: event.target.value })}
+                className="field-input"
+              />
+              {errors.email && <small className="field-error">{errors.email}</small>}
+            </label>
 
-          {/* Password */}
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
-            />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-          </div>
+            <label className="field-group">
+              <span>Password</span>
+              <input
+                type="password"
+                placeholder="Minimum 6 characters"
+                value={form.password}
+                onChange={(event) => setForm({ ...form, password: event.target.value })}
+                className="field-input"
+              />
+              {errors.password && <small className="field-error">{errors.password}</small>}
+            </label>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 rounded-xl text-white font-semibold transition ${
-              loading
-                ? "bg-slate-400"
-                : "bg-emerald-500 hover:bg-emerald-600"
-            }`}
-          >
-            {loading ? "Creating..." : "Register"}
-          </button>
+            <button type="submit" disabled={loading} className="btn-primary w-full">
+              <span className="inline-flex items-center gap-2">
+                <UserPlus size={16} />
+                {loading ? "Creating account..." : "Create account"}
+              </span>
+            </button>
+          </form>
 
-        </form>
-
-        <p className="text-center text-sm text-slate-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-emerald-600 font-semibold">
-            Login
-          </Link>
-        </p>
-
+          <p className="mt-6 text-center text-sm text-slate-600">
+            Already have an account?{" "}
+            <Link to="/login" className="font-semibold text-teal-700 hover:text-teal-800">
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

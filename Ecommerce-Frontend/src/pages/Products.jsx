@@ -1,71 +1,192 @@
-import { useEffect, useState } from 'react'
-import ProductCard from '../components/ProductCard'
-import api from '../api/axiosInstance'
+import { useEffect, useRef, useState } from "react"
+import { useSearchParams } from "react-router-dom"
+import ProductCard from "../components/ProductCard"
+import api from "../api/axiosInstance"
+import { Search } from "lucide-react"
 
-const Products = ({ refreshCartCount }) => {
+const ALLOWED_SORT_BY = new Set(["id", "price", "name"])
+const ALLOWED_DIRECTION = new Set(["asc", "desc"])
+
+const Products = ({ refreshCartCount, cartQuantities }) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const initialKeyword = searchParams.get("keyword")?.trim() || ""
+  const initialSortByParam = searchParams.get("sortBy") || "id"
+  const initialDirectionParam = searchParams.get("direction") || "asc"
+  const initialSortBy = ALLOWED_SORT_BY.has(initialSortByParam) ? initialSortByParam : "id"
+  const initialDirection = ALLOWED_DIRECTION.has(initialDirectionParam)
+    ? initialDirectionParam
+    : "asc"
 
   const [products, setProducts] = useState([])
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
-  const [keyword, setKeyword] = useState("")
-  const [sortBy, setSortBy] = useState("id")
-  const [direction, setDirection] = useState("asc")
+  const [searchInput, setSearchInput] = useState(initialKeyword)
+  const [keyword, setKeyword] = useState(initialKeyword)
+  const [sortBy, setSortBy] = useState(initialSortBy)
+  const [direction, setDirection] = useState(initialDirection)
+  const [loadingInitial, setLoadingInitial] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+
+  const loadMoreRef = useRef(null)
+  const requestIdRef = useRef(0)
 
   useEffect(() => {
+    document.title = "Shop Products | Home Chemicals"
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const normalizedKeyword = searchInput.trim()
+
+      if (normalizedKeyword !== keyword) {
+        setPage(0)
+        setProducts([])
+        setKeyword(normalizedKeyword)
+      }
+    }, 420)
+
+    return () => clearTimeout(timer)
+  }, [searchInput, keyword])
+
+  useEffect(() => {
+    const nextParams = new URLSearchParams()
+
+    if (keyword) nextParams.set("keyword", keyword)
+    if (sortBy !== "id") nextParams.set("sortBy", sortBy)
+    if (direction !== "asc") nextParams.set("direction", direction)
+
+    const current = searchParams.toString()
+    const next = nextParams.toString()
+
+    if (current !== next) {
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [keyword, sortBy, direction, searchParams, setSearchParams])
+
+  useEffect(() => {
+    const currentRequestId = requestIdRef.current + 1
+    requestIdRef.current = currentRequestId
+
     const fetchProducts = async () => {
       try {
-        const response = await api.get(
-          `/products?page=${page}&size=6&keyword=${keyword}&sortBy=${sortBy}&direction=${direction}`
-        )
+        if (page === 0) {
+          setLoadingInitial(true)
+        } else {
+          setLoadingMore(true)
+        }
 
-        setProducts(response.data.content)
-        setTotalPages(response.data.totalPages)
+        const response = await api.get("/products", {
+          params: {
+            page,
+            size: 6,
+            keyword,
+            sortBy,
+            direction
+          }
+        })
+
+        if (requestIdRef.current !== currentRequestId) return
+
+        const content = response.data.content || []
+        const apiTotalPages = response.data.totalPages || 0
+
+        setTotalPages(apiTotalPages)
+        setProducts((prevProducts) => {
+          if (page === 0) return content
+
+          const existingIds = new Set(prevProducts.map((item) => item.id))
+          const nextProducts = content.filter((item) => !existingIds.has(item.id))
+          return [...prevProducts, ...nextProducts]
+        })
       } catch (error) {
         console.log("Failed to fetch products:", error.response?.data || error.message)
+        if (page === 0) {
+          setProducts([])
+          setTotalPages(0)
+        }
+      } finally {
+        if (requestIdRef.current === currentRequestId) {
+          setLoadingInitial(false)
+          setLoadingMore(false)
+        }
       }
     }
 
     fetchProducts()
   }, [page, keyword, sortBy, direction])
 
+  const hasMore = page + 1 < totalPages
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasMore || loadingInitial || loadingMore) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0]
+
+        if (firstEntry.isIntersecting) {
+          setPage((prevPage) => prevPage + 1)
+        }
+      },
+      { rootMargin: "220px 0px" }
+    )
+
+    observer.observe(loadMoreRef.current)
+    return () => observer.disconnect()
+  }, [hasMore, loadingInitial, loadingMore])
+
   return (
-    <div className="animate-fadeIn">
-      <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-100 to-slate-200">
+    <div className="page-wrap animate-fadeIn">
+      <div className="page-accent page-accent--left" />
+      <div className="page-accent page-accent--right" />
 
-        <div className="max-w-[1600px] mx-auto px-8 py-20 space-y-16">
-
-          {/* PAGE TITLE */}
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-slate-800">
+      <div className="mx-auto w-full max-w-[1600px] space-y-8 px-4 py-6 sm:py-8 md:px-6 md:py-10 lg:px-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
+              Catalog
+            </p>
+            <h1 className="font-display text-3xl font-bold text-slate-900 md:text-4xl">
               All Products
             </h1>
-            <p className="text-slate-600 mt-2">
-              Explore our complete range of professional cleaning solutions.
+            <p className="mt-2 text-sm text-slate-600">
+              Browse, sort, and discover the best solution for every room.
             </p>
           </div>
+          <div className="rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+            {products.length} items loaded
+          </div>
+        </div>
 
-          {/* SEARCH + SORT */}
-          <section className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={keyword}
-              onChange={(e) => {
-                setPage(0)
-                setKeyword(e.target.value)
-              }}
-              className="px-5 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full md:w-80 shadow-sm"
-            />
+        <section className="surface-card rounded-3xl p-4 md:p-5">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_240px]">
+            <label className="relative">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search products by name or keyword"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                className="field-input pl-11"
+              />
+            </label>
 
             <select
               value={`${sortBy}-${direction}`}
-              onChange={(e) => {
-                const [newSortBy, newDirection] = e.target.value.split("-")
-                setPage(0)
-                setSortBy(newSortBy)
-                setDirection(newDirection)
+              onChange={(event) => {
+                const [newSortBy, newDirection] = event.target.value.split("-")
+
+                if (newSortBy !== sortBy || newDirection !== direction) {
+                  setPage(0)
+                  setProducts([])
+                  setSortBy(newSortBy)
+                  setDirection(newDirection)
+                }
               }}
-              className="px-5 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full md:w-72 shadow-sm"
+              className="field-input"
             >
               <option value="id-asc">Default</option>
               <option value="price-asc">Price: Low to High</option>
@@ -73,51 +194,59 @@ const Products = ({ refreshCartCount }) => {
               <option value="name-asc">Name: A to Z</option>
               <option value="name-desc">Name: Z to A</option>
             </select>
-          </section>
+          </div>
+        </section>
 
-          {/* PRODUCTS GRID */}
-          <section className="bg-white rounded-3xl p-12 shadow-xl border border-slate-200">
-            {products.length === 0 ? (
-              <p className="text-slate-600">No products found.</p>
+        <section>
+          {loadingInitial ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="surface-card animate-pulse rounded-3xl border border-[var(--border)] p-5"
+                >
+                  <div className="h-44 rounded-2xl bg-slate-200" />
+                  <div className="mt-4 h-4 w-24 rounded bg-slate-200" />
+                  <div className="mt-2 h-5 w-3/4 rounded bg-slate-200" />
+                  <div className="mt-2 h-4 rounded bg-slate-200" />
+                  <div className="mt-6 flex items-center justify-between">
+                    <div className="h-7 w-24 rounded bg-slate-200" />
+                    <div className="h-10 w-20 rounded-xl bg-slate-200" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="surface-card rounded-3xl p-10 text-center text-slate-600">
+              No products found for this filter.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  refreshCartCount={refreshCartCount}
+                  cartQuantity={cartQuantities?.[product.id] || 0}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {!loadingInitial && products.length > 0 && (
+          <section className="flex justify-center py-2">
+            {loadingMore ? (
+              <p className="text-sm text-slate-600">Loading more products...</p>
+            ) : hasMore ? (
+              <p className="text-sm text-slate-500">Scroll to load more</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    refreshCartCount={refreshCartCount}
-                  />
-                ))}
-              </div>
+              <p className="text-sm text-slate-500">You have reached the end.</p>
             )}
           </section>
+        )}
 
-          {/* PAGINATION */}
-          {totalPages > 1 && (
-            <section className="flex justify-center items-center gap-8">
-              <button
-                disabled={page === 0}
-                onClick={() => setPage(page - 1)}
-                className="bg-slate-900 text-white px-7 py-3 rounded-xl hover:bg-slate-800 transition shadow-md disabled:opacity-40"
-              >
-                Previous
-              </button>
-
-              <span className="text-slate-700 font-semibold text-lg">
-                Page {page + 1} of {totalPages}
-              </span>
-
-              <button
-                disabled={page + 1 === totalPages}
-                onClick={() => setPage(page + 1)}
-                className="bg-slate-800 text-white px-6 py-3 rounded-xl disabled:opacity-40 hover:bg-slate-700 transition shadow"
-              >
-                Next
-              </button>
-            </section>
-          )}
-
-        </div>
+        <div ref={loadMoreRef} className="h-1" />
       </div>
     </div>
   )

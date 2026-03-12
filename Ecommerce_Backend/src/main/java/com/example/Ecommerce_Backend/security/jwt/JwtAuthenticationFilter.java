@@ -26,18 +26,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Header: " + authorizationHeader);
-        System.out.println("JWT filter running");
         String email = null;
         String token = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
-            try{
+            try {
                 email = jwtService.extractUsername(token);
-                System.out.println("Extracted email: " + email);
-            } catch (Exception e) {
-                System.out.println("Token parsing error: " +  e.getMessage());
+            } catch (Exception ignored) {
             }
         }
 

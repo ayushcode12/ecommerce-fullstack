@@ -19,10 +19,24 @@ public class OrderResponseDTO {
     private Long orderId;
 
     private BigDecimal totalAmount;
+    private BigDecimal subTotalAmount;
+    private BigDecimal shippingAmount;
+    private BigDecimal platformFeeAmount;
+    private BigDecimal taxAmount;
 
     private OrderStatus status;
 
     private LocalDateTime createdAt;
+
+    private String shippingFullName;
+    private String shippingPhone;
+    private String shippingLine1;
+    private String shippingLine2;
+    private String shippingCity;
+    private String shippingState;
+    private String shippingPostalCode;
+    private String shippingLandmark;
+    private String shippingLabel;
 
     private List<OrderItemResponseDTO> items;
 
