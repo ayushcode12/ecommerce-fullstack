@@ -126,7 +126,7 @@ const AddAddress = () => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-3xl px-4 py-8 md:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto w-full max-w-3xl px-3 py-5 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <button
           onClick={() => navigate(-1)}
           className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 backdrop-blur hover:bg-white"
@@ -135,13 +135,13 @@ const AddAddress = () => {
           Back
         </button>
 
-        <div className="rounded-3xl border border-[var(--border)] bg-white/85 p-6 shadow-xl backdrop-blur md:p-8">
-          <div className="mb-8">
+        <div className="rounded-3xl border border-[var(--border)] bg-white/85 p-5 shadow-xl backdrop-blur sm:p-6 md:p-8">
+          <div className="mb-6 sm:mb-8">
             <p className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
               <MapPinned size={14} />
               Delivery Address
             </p>
-            <h1 className="mt-4 font-display text-3xl text-slate-900 md:text-4xl">
+            <h1 className="mt-3 font-display text-2xl text-slate-900 sm:text-3xl md:text-4xl">
               {isEditMode ? "Edit Address" : "Add New Address"}
             </h1>
             <p className="mt-2 text-sm text-slate-600">

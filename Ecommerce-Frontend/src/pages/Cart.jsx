@@ -138,14 +138,14 @@ const Cart = ({ refreshCartCount }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1320px] space-y-6 px-4 py-6 sm:py-8 md:px-6 md:py-10 lg:px-8">
-        <div className="surface-card rounded-3xl p-6 md:p-8">
+      <div className="mx-auto w-full max-w-[1320px] space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
+        <div className="surface-card rounded-3xl p-5 md:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">
                 Checkout
               </p>
-              <h1 className="mt-1 font-display text-3xl font-bold text-slate-900">
+              <h1 className="mt-1 font-display text-2xl font-bold text-slate-900 sm:text-3xl">
                 Your Cart
               </h1>
               <p className="mt-2 text-sm text-slate-600">
@@ -192,7 +192,7 @@ const Cart = ({ refreshCartCount }) => {
                   Current Delivery Address
                 </div>
 
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
                   <div>
                     {selectedAddress ? (
                       <>
@@ -208,23 +208,23 @@ const Cart = ({ refreshCartCount }) => {
                       <p className="mt-2 font-semibold text-rose-600">No address selected.</p>
                     )}
                   </div>
-                  <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <button
                       onClick={handleAddNewAddress}
-                      className="inline-flex items-center rounded-lg border border-teal-200 bg-teal-50 px-3.5 py-2 text-sm font-semibold text-teal-700 transition hover:bg-teal-100 hover:text-teal-800"
+                      className="inline-flex w-full items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-3.5 py-2 text-sm font-semibold text-teal-700 transition hover:bg-teal-100 hover:text-teal-800 sm:w-auto"
                     >
                       Add New
                     </button>
                     <button
                       onClick={handleEditSelectedAddress}
                       disabled={!selectedAddress}
-                      className="inline-flex items-center rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex w-full items-center justify-center rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                     >
                       Edit
                     </button>
                     <button
                       onClick={handleToggleSavedAddresses}
-                      className="inline-flex min-w-[96px] items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700"
+                      className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 sm:min-w-[96px] sm:w-auto"
                     >
                       Saved
                       <ChevronDown size={15} />
@@ -320,7 +320,8 @@ const Cart = ({ refreshCartCount }) => {
                       <p className="mt-1 text-sm text-slate-600">Rs {item.price} per unit</p>
                     </div>
 
-                    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white px-2 py-1">
+                    <div className="w-fit rounded-xl border border-[var(--border)] bg-white px-2 py-1">
+                      <div className="flex items-center gap-3">
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                         className="rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-teal-700"
@@ -334,6 +335,7 @@ const Cart = ({ refreshCartCount }) => {
                       >
                         <Plus size={14} />
                       </button>
+                      </div>
                     </div>
 
                     <div className="font-display text-xl font-bold text-teal-700">

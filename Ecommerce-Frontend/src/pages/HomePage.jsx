@@ -52,8 +52,8 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1400px] space-y-10 px-4 py-6 sm:py-8 md:space-y-12 md:px-6 md:py-10 lg:px-8">
-        <section className="relative overflow-hidden rounded-[1.6rem] border border-teal-100 bg-gradient-to-br from-teal-700 via-teal-600 to-cyan-700 p-5 text-white shadow-2xl sm:rounded-[2rem] sm:p-7 md:p-10 lg:p-12">
+      <div className="mx-auto w-full max-w-[1400px] space-y-8 px-3 py-5 sm:space-y-10 sm:px-4 sm:py-6 md:space-y-12 md:px-6 md:py-10 lg:px-8">
+        <section className="relative overflow-hidden rounded-3xl border border-teal-100 bg-gradient-to-br from-teal-700 via-teal-600 to-cyan-700 p-4 text-white shadow-2xl sm:rounded-[2rem] sm:p-7 md:p-10 lg:p-12">
           <div className="absolute -right-16 -top-20 h-60 w-60 rounded-full bg-amber-300/25 blur-3xl" />
           <div className="absolute -bottom-20 left-8 h-56 w-56 rounded-full bg-cyan-200/20 blur-3xl" />
 
@@ -64,22 +64,22 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
                 Professional Home Care
               </p>
 
-              <h1 className="font-display text-3xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="font-display text-2xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
                 Professional cleaning products for modern homes
               </h1>
 
-              <p className="mt-5 max-w-2xl text-base text-teal-50 md:text-lg">
+              <p className="mt-4 max-w-2xl text-sm text-teal-50 sm:text-base md:text-lg">
                 Discover reliable formulas for bathrooms, kitchens, and every surface.
                 Trusted quality, fast delivery, and dependable support.
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3">
-                <button onClick={() => navigate("/products")} className="btn-primary">
+              <div className="mt-6 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:flex-wrap sm:gap-3">
+                <button onClick={() => navigate("/products")} className="btn-primary w-full sm:w-auto">
                   Explore Catalog
                 </button>
                 <button
                   onClick={() => navigate("/products?sortBy=price&direction=desc")}
-                  className="rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold transition hover:bg-white/20"
+                  className="w-full rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold transition hover:bg-white/20 sm:w-auto"
                 >
                   Shop Top Value
                 </button>
@@ -98,7 +98,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
           {[
             { icon: Truck, title: "Fast Delivery", desc: "Dispatch in 24 hours for major cities." },
             { icon: ShieldCheck, title: "Lab Tested", desc: "Verified quality and surface-safe formulas." },
@@ -112,10 +112,10 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
           ))}
         </section>
 
-        <section className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-white/90 p-5 shadow-xl sm:p-6 md:p-8">
+        <section className="relative overflow-hidden rounded-3xl border border-[var(--border)] bg-white/90 p-4 shadow-xl sm:p-6 md:p-8">
           <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-teal-100/70 blur-3xl" />
 
-          <div className="relative mb-6 flex flex-wrap items-end justify-between gap-3">
+          <div className="relative mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-6">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
                 Curated Collections
@@ -127,7 +127,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
                 Jump directly into focused product collections.
               </p>
             </div>
-            <div className="rounded-full border border-teal-100 bg-teal-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-teal-700">
+            <div className="rounded-full border border-teal-100 bg-teal-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-teal-700 sm:px-4 sm:py-2 sm:text-xs">
               3 Collections
             </div>
           </div>
@@ -137,7 +137,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
               <button
                 key={category.id}
                 onClick={() => navigate(`/category/${category.id}`)}
-                className="group rounded-2xl border border-[var(--border)] bg-gradient-to-br from-white to-slate-50 p-6 text-left transition duration-300 hover:-translate-y-1 hover:border-teal-200 hover:shadow-xl"
+                className="group rounded-2xl border border-[var(--border)] bg-gradient-to-br from-white to-slate-50 p-5 text-left transition duration-300 hover:-translate-y-1 hover:border-teal-200 hover:shadow-xl sm:p-6"
               >
                 <div className="mb-5 flex items-center justify-between">
                   <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-teal-600 text-sm font-bold text-white">
@@ -148,7 +148,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
                   </span>
                 </div>
 
-                <h3 className="font-display text-xl font-bold text-slate-900 transition group-hover:text-teal-700 sm:text-2xl">
+                <h3 className="font-display text-lg font-bold text-slate-900 transition group-hover:text-teal-700 sm:text-2xl">
                   {category.name}
                 </h3>
                 <p className="mt-2 text-sm text-slate-600">{category.detail}</p>
@@ -162,7 +162,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
         </section>
 
         <section className="space-y-6">
-          <div className="flex flex-wrap items-end justify-between gap-3">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
             <div>
               <h2 className="font-display text-2xl font-bold text-slate-900 md:text-3xl">
                 Featured Products
@@ -173,7 +173,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
             </div>
             <button
               onClick={() => navigate("/products")}
-              className="rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700"
+              className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 sm:w-auto"
             >
               View all products
             </button>

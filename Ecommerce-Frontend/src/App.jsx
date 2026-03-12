@@ -9,6 +9,9 @@ import OrderDetails from './pages/OrderDetails'
 import ProductDetails from './pages/ProductDetails'
 import CategoryPage from './pages/CategoryPage'
 import AddAddress from './pages/AddAddress'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminProducts from './pages/admin/AdminProducts'
+import AdminOrders from './pages/admin/AdminOrders'
 import ProtectedRoute from './auth/ProtectedRoute'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState, useEffect } from "react"
@@ -27,6 +30,12 @@ function App() {
   const [cartQuantities, setCartQuantities] = useState({})
 
   const refreshCartCount = async () => {
+    if (localStorage.getItem("role") !== "USER") {
+      setCartCount(0)
+      setCartQuantities({})
+      return
+    }
+
     try {
       const response = await api.get("/cart")
       const cartItems = response.data.cartItems || []
@@ -132,6 +141,24 @@ function App() {
         <Route path="/addresses/:addressId/edit" element={
           <ProtectedRoute>
             <AddAddress />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/products" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminProducts />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/orders" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminOrders />
           </ProtectedRoute>
         } />
 

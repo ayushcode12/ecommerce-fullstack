@@ -143,26 +143,26 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1600px] space-y-8 px-4 py-6 sm:py-8 md:px-6 md:py-10 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="mx-auto w-full max-w-[1600px] space-y-6 px-3 py-5 sm:space-y-8 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
               Catalog
             </p>
-            <h1 className="font-display text-3xl font-bold text-slate-900 md:text-4xl">
+            <h1 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">
               All Products
             </h1>
             <p className="mt-2 text-sm text-slate-600">
               Browse, sort, and discover the best solution for every room.
             </p>
           </div>
-          <div className="rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+          <div className="rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 sm:px-4 sm:py-2 sm:text-sm">
             {products.length} items loaded
           </div>
         </div>
 
         <section className="surface-card rounded-3xl p-4 md:p-5">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_240px]">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-[1fr_240px]">
             <label className="relative">
               <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -199,7 +199,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
 
         <section>
           {loadingInitial ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
@@ -221,7 +221,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
               No products found for this filter.
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}

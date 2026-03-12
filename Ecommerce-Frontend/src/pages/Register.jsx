@@ -45,11 +45,11 @@ const Register = () => {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br from-slate-900 via-teal-900 to-cyan-900 px-4 py-4 md:px-6 md:py-6">
+    <div className="relative flex min-h-screen items-start overflow-hidden bg-gradient-to-br from-slate-900 via-teal-900 to-cyan-900 px-3 py-4 sm:items-center sm:px-4 md:px-6 md:py-6">
       <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-teal-300/25 blur-3xl" />
       <div className="absolute -right-24 bottom-8 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl overflow-hidden rounded-[2rem] border border-white/20 bg-white/95 shadow-2xl lg:min-h-[78vh] lg:grid-cols-2">
+      <div className="relative mx-auto grid w-full max-w-7xl overflow-hidden rounded-[1.5rem] border border-white/20 bg-white/95 shadow-2xl sm:rounded-[2rem] lg:min-h-[78vh] lg:grid-cols-2">
         <div className="hidden bg-gradient-to-br from-cyan-700 to-teal-700 p-10 text-white lg:flex lg:flex-col lg:justify-between">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-100">Create account</p>
           <div>
@@ -63,11 +63,11 @@ const Register = () => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center p-6 md:p-10 lg:p-12">
-          <h2 className="font-display text-3xl font-bold text-slate-900">Register</h2>
+        <div className="flex flex-col justify-center p-5 sm:p-6 md:p-10 lg:p-12">
+          <h2 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl">Register</h2>
           <p className="mt-2 text-sm text-slate-600">Create your Home Chemicals account.</p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-5 sm:mt-8 sm:space-y-6">
             <label className="field-group">
               <span>Full Name</span>
               <input

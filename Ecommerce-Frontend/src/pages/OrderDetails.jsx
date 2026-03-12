@@ -206,7 +206,7 @@ const OrderDetails = () => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1200px] space-y-6 px-4 py-6 sm:py-8 md:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <button
           onClick={() => navigate("/orders")}
           className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 backdrop-blur hover:bg-white"
@@ -215,14 +215,14 @@ const OrderDetails = () => {
           Back to Orders
         </button>
 
-        <section className="relative overflow-hidden rounded-3xl border border-teal-300 bg-gradient-to-r from-teal-700 via-teal-600 to-cyan-700 p-6 text-white shadow-2xl md:p-8">
+        <section className="relative overflow-hidden rounded-3xl border border-teal-300 bg-gradient-to-r from-teal-700 via-teal-600 to-cyan-700 p-5 text-white shadow-2xl sm:p-6 md:p-8">
           <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
           <div className="absolute -left-14 bottom-0 h-36 w-36 rounded-full bg-amber-300/20 blur-2xl" />
 
           <div className="relative flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-100">Order Tracking</p>
-              <h1 className="mt-1 font-display text-3xl font-bold md:text-4xl">Order #{orderDetails.orderId}</h1>
+              <h1 className="mt-1 font-display text-2xl font-bold sm:text-3xl md:text-4xl">Order #{orderDetails.orderId}</h1>
               <p className="mt-2 inline-flex items-center gap-2 text-sm text-teal-50">
                 <CalendarClock size={15} />
                 Placed on {formatOrderDate(orderDetails.createdAt)}
@@ -233,11 +233,11 @@ const OrderDetails = () => {
               <span className="inline-flex rounded-full border border-white/35 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                 {statusMeta.label}
               </span>
-              <p className="mt-2 font-display text-3xl font-bold">{formatCurrency(totalPaidAmount)}</p>
+              <p className="mt-2 font-display text-2xl font-bold sm:text-3xl">{formatCurrency(totalPaidAmount)}</p>
             </div>
           </div>
 
-          <div className="relative mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="relative mt-5 grid gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-3">
             <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-100">Items</p>
               <p className="mt-1 text-lg font-bold">{itemCount}</p>
@@ -335,7 +335,7 @@ const OrderDetails = () => {
             </section>
           </div>
 
-          <aside className="space-y-6">
+          <aside className="space-y-5 sm:space-y-6">
             <section className="surface-card rounded-2xl p-5 md:p-6">
               <h2 className="font-display text-xl font-bold text-slate-900">Delivery Address</h2>
 

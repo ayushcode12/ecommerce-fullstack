@@ -2,11 +2,17 @@ package com.example.Ecommerce_Backend.service;
 
 import com.example.Ecommerce_Backend.dto.OrderItemResponseDTO;
 import com.example.Ecommerce_Backend.dto.OrderResponseDTO;
+import com.example.Ecommerce_Backend.dto.AdminDashboardResponseDTO;
 import com.example.Ecommerce_Backend.exception.BadRequestException;
 import com.example.Ecommerce_Backend.exception.ResourceNotFoundException;
 import com.example.Ecommerce_Backend.model.*;
 import com.example.Ecommerce_Backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -137,6 +145,104 @@ public class OrderService {
         return mapOrderToResponse(order);
     }
 
+    public Page<OrderResponseDTO> getAllOrdersForAdmin(
+            int page,
+            int size,
+            String sortBy,
+            String direction,
+            String status,
+            String keyword
+    ) {
+        Sort sort = "desc".equalsIgnoreCase(direction)
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        String normalizedKeyword = keyword == null ? null : keyword.trim();
+        boolean hasKeyword = normalizedKeyword != null && !normalizedKeyword.isEmpty();
+
+        OrderStatus orderStatus = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                orderStatus = OrderStatus.valueOf(status.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Invalid order status filter");
+            }
+        }
+
+        Page<OrderEntity> orderPage;
+        if (orderStatus != null && hasKeyword) {
+            orderPage = orderRepository.findByStatusAndUserEmailContainingIgnoreCase(orderStatus, normalizedKeyword, pageable);
+        } else if (orderStatus != null) {
+            orderPage = orderRepository.findByStatus(orderStatus, pageable);
+        } else if (hasKeyword) {
+            orderPage = orderRepository.findByUserEmailContainingIgnoreCase(normalizedKeyword, pageable);
+        } else {
+            orderPage = orderRepository.findAll(pageable);
+        }
+
+        List<OrderResponseDTO> content = orderPage.getContent().stream()
+                .map(this::mapOrderToResponse)
+                .toList();
+
+        return new PageImpl<>(content, pageable, orderPage.getTotalElements());
+    }
+
+    public OrderResponseDTO getOrderDetailsForAdmin(Long orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        return mapOrderToResponse(order);
+    }
+
+    public OrderResponseDTO updateOrderStatusForAdmin(Long orderId, OrderStatus newStatus) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        OrderStatus currentStatus = order.getStatus();
+        if (currentStatus == newStatus) {
+            return mapOrderToResponse(order);
+        }
+
+        validateStatusTransition(currentStatus, newStatus);
+        order.setStatus(newStatus);
+        OrderEntity saved = orderRepository.save(order);
+        return mapOrderToResponse(saved);
+    }
+
+    public AdminDashboardResponseDTO getDashboardForAdmin() {
+        long totalUsers = userRepository.count();
+        long totalProducts = productRepository.count();
+        long totalOrders = orderRepository.count();
+
+        long pendingOrders = orderRepository.countByStatus(OrderStatus.PENDING);
+        long confirmedOrders = orderRepository.countByStatus(OrderStatus.CONFIRMED);
+        long shippedOrders = orderRepository.countByStatus(OrderStatus.SHIPPED);
+        long deliveredOrders = orderRepository.countByStatus(OrderStatus.DELIVERED);
+        long canceledOrders = orderRepository.countByStatus(OrderStatus.CANCELED);
+
+        BigDecimal totalRevenue = orderRepository.findAll().stream()
+                .filter(order -> order.getStatus() != OrderStatus.CANCELED)
+                .map(OrderEntity::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        List<OrderResponseDTO> recentOrders = orderRepository.findTop5ByOrderByCreatedAtDesc().stream()
+                .map(this::mapOrderToResponse)
+                .toList();
+
+        return AdminDashboardResponseDTO.builder()
+                .totalUsers(totalUsers)
+                .totalProducts(totalProducts)
+                .totalOrders(totalOrders)
+                .pendingOrders(pendingOrders)
+                .confirmedOrders(confirmedOrders)
+                .shippedOrders(shippedOrders)
+                .deliveredOrders(deliveredOrders)
+                .canceledOrders(canceledOrders)
+                .totalRevenue(totalRevenue)
+                .recentOrders(recentOrders)
+                .build();
+    }
+
     private UserEntity getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -168,6 +274,8 @@ public class OrderService {
                 .taxAmount(order.getTaxAmount())
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
+                .userName(order.getUser() == null ? null : order.getUser().getName())
+                .userEmail(order.getUser() == null ? null : order.getUser().getEmail())
                 .shippingFullName(order.getShippingFullName())
                 .shippingPhone(order.getShippingPhone())
                 .shippingLine1(order.getShippingLine1())
@@ -179,6 +287,24 @@ public class OrderService {
                 .shippingLabel(order.getShippingLabel())
                 .items(itemDTOs)
                 .build();
+    }
+
+    private void validateStatusTransition(OrderStatus currentStatus, OrderStatus nextStatus) {
+        if (currentStatus == OrderStatus.DELIVERED || currentStatus == OrderStatus.CANCELED) {
+            throw new BadRequestException("Completed orders cannot be updated");
+        }
+
+        Set<OrderStatus> allowedNext;
+        switch (currentStatus) {
+            case PENDING -> allowedNext = EnumSet.of(OrderStatus.CONFIRMED, OrderStatus.CANCELED);
+            case CONFIRMED -> allowedNext = EnumSet.of(OrderStatus.SHIPPED, OrderStatus.CANCELED);
+            case SHIPPED -> allowedNext = EnumSet.of(OrderStatus.DELIVERED);
+            default -> allowedNext = EnumSet.noneOf(OrderStatus.class);
+        }
+
+        if (!allowedNext.contains(nextStatus)) {
+            throw new BadRequestException("Invalid status transition from " + currentStatus + " to " + nextStatus);
+        }
     }
 
     private void applyShippingSnapshot(OrderEntity order, AddressEntity address) {

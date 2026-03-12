@@ -41,19 +41,19 @@ const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1600px] space-y-8 px-4 py-6 sm:py-8 md:px-6 md:py-10 lg:px-8">
-        <div className="surface-card rounded-3xl p-6 md:p-8">
+      <div className="mx-auto w-full max-w-[1600px] space-y-6 px-3 py-5 sm:space-y-8 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
+        <div className="surface-card rounded-3xl p-5 md:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
             Category collection
           </p>
-          <h1 className="mt-2 font-display text-3xl font-bold text-slate-900 md:text-4xl">
+          <h1 className="mt-2 font-display text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">
             {categoryTitle}
           </h1>
           <p className="mt-2 text-sm text-slate-600">Explore products in this category.</p>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="surface-card animate-pulse rounded-3xl p-4">
                 <div className="h-36 rounded-xl bg-slate-200" />
@@ -68,7 +68,7 @@ const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
             No products found in this category.
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard
                 key={product.id}

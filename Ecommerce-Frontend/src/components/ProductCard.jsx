@@ -64,7 +64,7 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
       onClick={() => navigate(`/product/${product.id}`)}
       className="group surface-card cursor-pointer overflow-hidden rounded-3xl border border-[var(--border)] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
     >
-      <div className="relative h-56 overflow-hidden bg-slate-100">
+      <div className="relative h-48 overflow-hidden bg-slate-100 sm:h-56">
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent opacity-0 transition group-hover:opacity-100" />
         <img
           src={productImage}
@@ -77,12 +77,12 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
         />
       </div>
 
-      <div className="space-y-4 p-6">
+      <div className="space-y-3 p-4 sm:space-y-4 sm:p-6">
         <span className="inline-flex rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
           {product.categoryName}
         </span>
 
-        <h3 className="font-display text-xl font-bold leading-snug text-slate-900">
+        <h3 className="font-display text-lg font-bold leading-snug text-slate-900 sm:text-xl">
           {product.name}
         </h3>
 
@@ -90,8 +90,8 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
           {product.description}
         </p>
 
-        <div className="mt-6 flex items-center justify-between">
-          <p className="font-display text-2xl font-bold text-teal-700">Rs {product.price}</p>
+        <div className="mt-5 flex flex-col items-start gap-3 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-display text-xl font-bold text-teal-700 sm:text-2xl">Rs {product.price}</p>
 
           {quantity > 0 ? (
             <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-2 py-1">
@@ -119,7 +119,7 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
             <button
               disabled={updatingQuantity}
               onClick={handleAddToCart}
-              className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 ${
+              className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 sm:w-auto ${
                 updatingQuantity ? "cursor-not-allowed bg-slate-400" : "bg-teal-600 hover:bg-teal-700"
               }`}
             >

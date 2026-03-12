@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/register", "/auth/login", "/auth/refresh").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/products/**").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/categories/**").permitAll()
                     .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

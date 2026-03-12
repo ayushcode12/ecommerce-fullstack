@@ -23,8 +23,9 @@ export const AddressProvider = ({ children }) => {
   const loadAddresses = async () => {
     const hasSession =
       localStorage.getItem("token") || localStorage.getItem("refreshToken")
+    const role = localStorage.getItem("role")
 
-    if (!hasSession) {
+    if (!hasSession || role !== "USER") {
       setAddresses([])
       return []
     }

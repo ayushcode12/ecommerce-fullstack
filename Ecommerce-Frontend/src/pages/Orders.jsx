@@ -88,12 +88,12 @@ const Orders = () => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1200px] space-y-6 px-4 py-6 sm:py-8 md:px-6 md:py-10 lg:px-8">
-        <div className="surface-card rounded-3xl p-6 md:p-8">
+      <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
+        <div className="surface-card rounded-3xl p-5 md:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">
             Order Tracking
           </p>
-          <h1 className="mt-1 font-display text-3xl font-bold text-slate-900">My Orders</h1>
+          <h1 className="mt-1 font-display text-2xl font-bold text-slate-900 sm:text-3xl">My Orders</h1>
           <p className="mt-2 text-sm text-slate-600">
             Monitor live order status, shipping progress, and delivery timeline.
           </p>
@@ -128,8 +128,8 @@ const Orders = () => {
                 <button
                   key={order.orderId}
                   onClick={() => navigate(`/orders/${order.orderId}`)}
-                  className="surface-card w-full rounded-2xl p-5 text-left transition hover:-translate-y-0.5 hover:shadow-xl"
-                >
+                className="surface-card w-full rounded-2xl p-4 text-left transition hover:-translate-y-0.5 hover:shadow-xl sm:p-5"
+              >
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <h2 className="font-display text-xl font-bold text-slate-900">Order #{order.orderId}</h2>
@@ -139,7 +139,7 @@ const Orders = () => {
                       </p>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-left sm:text-right">
                       <span
                         className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${statusMeta.badgeClass}`}
                       >
@@ -159,7 +159,7 @@ const Orders = () => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-4 sm:gap-3">
                       {timelineSteps.map((step) => {
                         const classes = getStepClasses(step.state)
                         return (
@@ -174,7 +174,7 @@ const Orders = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border)] pt-4 text-sm">
+                  <div className="mt-4 flex flex-col items-start gap-2 border-t border-[var(--border)] pt-4 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
                     <p className="inline-flex items-center gap-2 text-slate-600">
                       <PackageCheck size={15} className="text-teal-700" />
                       {itemCount} item{itemCount === 1 ? "" : "s"}

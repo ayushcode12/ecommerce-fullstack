@@ -28,6 +28,9 @@ public class OrderResponseDTO {
 
     private LocalDateTime createdAt;
 
+    private String userName;
+    private String userEmail;
+
     private String shippingFullName;
     private String shippingPhone;
     private String shippingLine1;

@@ -3,8 +3,8 @@ import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa"
 
 const Footer = () => {
   return (
-    <footer className="mt-20 border-t border-[var(--border)] bg-white/80 backdrop-blur-xl">
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
+    <footer className="mt-10 border-t border-[var(--border)] bg-white/80 backdrop-blur-xl md:mt-20">
+      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 sm:gap-10 sm:px-6 md:py-12 lg:grid-cols-4 lg:px-8">
         <div className="space-y-4">
           <h2 className="font-display text-2xl font-bold text-slate-900">
             Home <span className="text-teal-600">Chemicals</span>

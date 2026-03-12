@@ -111,7 +111,7 @@ api.interceptors.response.use(
     const originalRequest = error.config || {}
     const requestUrl = originalRequest.url || ""
 
-    if ((status === 401 || status === 403) && !isAuthEndpoint(requestUrl) && !originalRequest._retry) {
+    if (status === 401 && !isAuthEndpoint(requestUrl) && !originalRequest._retry) {
       originalRequest._retry = true
       try {
         const validAccessToken = await getValidAccessToken()
@@ -124,7 +124,7 @@ api.interceptors.response.use(
       }
     }
 
-    if ((status === 401 || status === 403) && !isAuthEndpoint(requestUrl)) {
+    if (status === 401 && !isAuthEndpoint(requestUrl)) {
       clearSessionAndRedirect()
     }
 
