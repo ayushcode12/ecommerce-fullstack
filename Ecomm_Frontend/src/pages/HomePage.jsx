@@ -73,7 +73,7 @@ const HomePage = ({ refreshCartCount, cartQuantities }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1400px] space-y-8 px-3 py-5 sm:space-y-10 sm:px-4 sm:py-6 md:space-y-12 md:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto w-full max-w-[1500px] space-y-8 px-3 py-5 sm:space-y-10 sm:px-4 sm:py-6 md:space-y-12 md:px-6 md:py-10 lg:px-8">
         <section className="relative overflow-hidden rounded-3xl border border-white/30 bg-gradient-to-br from-slate-900 via-slate-800 to-teal-800 p-4 text-white shadow-[0_26px_70px_rgba(15,23,42,0.4)] sm:rounded-[2rem] sm:p-7 md:p-10 lg:p-12">
           <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-cyan-300/20 blur-3xl" />
           <div className="absolute -bottom-20 left-8 h-56 w-56 rounded-full bg-blue-300/20 blur-3xl" />
