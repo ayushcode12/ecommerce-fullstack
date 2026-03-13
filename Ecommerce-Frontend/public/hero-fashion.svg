@@ -1,0 +1,40 @@
+<svg width="900" height="620" viewBox="0 0 900 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BE123C"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <linearGradient id="shirtA" x1="250" y1="180" x2="420" y2="440" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDE68A"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="shirtB" x1="470" y1="170" x2="650" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBCFE8"/>
+      <stop offset="1" stop-color="#E11D48"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="620" rx="36" fill="url(#bg)"/>
+  <circle cx="146" cy="100" r="94" fill="white" fill-opacity="0.16"/>
+  <circle cx="786" cy="538" r="120" fill="#F43F5E" fill-opacity="0.22"/>
+  <circle cx="760" cy="120" r="72" fill="white" fill-opacity="0.13"/>
+
+  <rect x="205" y="140" width="490" height="14" rx="7" fill="white" fill-opacity="0.78"/>
+  <rect x="232" y="154" width="6" height="14" rx="3" fill="white" fill-opacity="0.62"/>
+  <rect x="662" y="154" width="6" height="14" rx="3" fill="white" fill-opacity="0.62"/>
+
+  <path d="M256 220L314 180H360L418 220V432C418 444 408 454 396 454H278C266 454 256 444 256 432V220Z" fill="url(#shirtA)"/>
+  <path d="M314 180L337 220H280L314 180Z" fill="#FDE68A"/>
+  <path d="M360 180L394 220H337L360 180Z" fill="#FDE68A"/>
+  <rect x="312" y="250" width="50" height="8" rx="4" fill="#78350F" fill-opacity="0.24"/>
+
+  <path d="M486 212L546 170H594L654 212V434C654 447 644 458 631 458H509C496 458 486 447 486 434V212Z" fill="url(#shirtB)"/>
+  <path d="M546 170L570 210H512L546 170Z" fill="#FBCFE8"/>
+  <path d="M594 170L628 210H570L594 170Z" fill="#FBCFE8"/>
+  <rect x="542" y="246" width="56" height="8" rx="4" fill="white" fill-opacity="0.34"/>
+
+  <rect x="232" y="466" width="436" height="10" rx="5" fill="white" fill-opacity="0.42"/>
+  <text x="450" y="550" text-anchor="middle" fill="white" fill-opacity="0.9" font-size="40" font-family="Arial, sans-serif" font-weight="700">
+    New Fashion Collection
+  </text>
+</svg>

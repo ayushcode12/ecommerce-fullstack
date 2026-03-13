@@ -15,14 +15,14 @@ import {
 const getStepClasses = (state) => {
   if (state === "done") {
     return {
-      dot: "bg-teal-600 border-teal-600",
-      text: "text-teal-700"
+      dot: "bg-rose-600 border-rose-600",
+      text: "text-rose-700"
     }
   }
 
   if (state === "active") {
     return {
-      dot: "bg-white border-teal-600 ring-4 ring-teal-100",
+      dot: "bg-white border-rose-600 ring-4 ring-rose-100",
       text: "text-slate-900"
     }
   }
@@ -54,7 +54,7 @@ const Orders = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    document.title = "My Orders | Home Chemicals"
+    document.title = "My Orders | Urban Threads"
   }, [])
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const Orders = () => {
 
       <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <div className="surface-card rounded-3xl p-5 md:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
             Order Tracking
           </p>
           <h1 className="mt-1 font-display text-2xl font-bold text-slate-900 sm:text-3xl">My Orders</h1>
@@ -145,7 +145,7 @@ const Orders = () => {
                       >
                         {statusMeta.label}
                       </span>
-                      <p className="mt-2 font-display text-2xl font-bold text-teal-700">
+                      <p className="mt-2 font-display text-2xl font-bold text-rose-700">
                         {formatCurrency(order.totalAmount)}
                       </p>
                     </div>
@@ -154,7 +154,7 @@ const Orders = () => {
                   <div className="mt-4">
                     <div className="mb-2 h-2 overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 transition-all duration-500"
+                        className="h-full rounded-full bg-gradient-to-r from-rose-500 to-amber-500 transition-all duration-500"
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>
@@ -176,20 +176,20 @@ const Orders = () => {
 
                   <div className="mt-4 flex flex-col items-start gap-2 border-t border-[var(--border)] pt-4 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
                     <p className="inline-flex items-center gap-2 text-slate-600">
-                      <PackageCheck size={15} className="text-teal-700" />
+                      <PackageCheck size={15} className="text-rose-700" />
                       {itemCount} item{itemCount === 1 ? "" : "s"}
                     </p>
 
                     {estimatedDelivery ? (
                       <p className="inline-flex items-center gap-2 text-slate-600">
-                        <Truck size={15} className="text-teal-700" />
+                        <Truck size={15} className="text-rose-700" />
                         ETA {estimatedDelivery}
                       </p>
                     ) : (
                       <p className="text-slate-500">Delivery timeline updated in order details</p>
                     )}
 
-                    <span className="inline-flex items-center gap-1 font-semibold text-teal-700">
+                    <span className="inline-flex items-center gap-1 font-semibold text-rose-700">
                       View details
                       <ChevronRight size={15} />
                     </span>
@@ -205,3 +205,5 @@ const Orders = () => {
 }
 
 export default Orders
+
+

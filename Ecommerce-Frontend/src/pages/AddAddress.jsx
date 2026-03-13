@@ -137,7 +137,7 @@ const AddAddress = () => {
 
         <div className="rounded-3xl border border-[var(--border)] bg-white/85 p-5 shadow-xl backdrop-blur sm:p-6 md:p-8">
           <div className="mb-6 sm:mb-8">
-            <p className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
+            <p className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-rose-700">
               <MapPinned size={14} />
               Delivery Address
             </p>
@@ -285,3 +285,4 @@ const AddAddress = () => {
 }
 
 export default AddAddress
+

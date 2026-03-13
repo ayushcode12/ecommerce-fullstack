@@ -87,9 +87,12 @@ function Navbar({ cartCount }) {
       <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-2 px-3 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between md:gap-3 md:px-6 md:py-4 lg:px-8">
         <Link
           to="/"
-          className="font-display text-lg font-bold tracking-tight text-slate-900 sm:text-xl md:text-2xl"
+          className="inline-flex items-center gap-2 font-display text-lg font-bold tracking-tight text-slate-900 sm:text-xl md:text-2xl"
         >
-          Home <span className="text-teal-600">Chemicals</span>
+          Urban <span className="text-rose-600">Threads</span>
+          <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[10px] font-sans font-semibold uppercase tracking-[0.12em] text-rose-700">
+            Style
+          </span>
         </Link>
 
         <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:justify-start sm:gap-3 md:gap-4">
@@ -105,7 +108,7 @@ function Navbar({ cartCount }) {
                 }}
                 className="flex w-full items-center gap-2 rounded-2xl border border-[var(--border)] bg-white px-3 py-2.5 text-left text-slate-800 shadow-sm transition hover:shadow sm:max-w-[320px]"
               >
-                <MapPin size={16} className="text-teal-600" />
+                <MapPin size={16} className="text-rose-600" />
                 <div className="min-w-0">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                     Deliver to
@@ -136,7 +139,7 @@ function Navbar({ cartCount }) {
                           key={address.id}
                           className={`w-full rounded-xl border p-3 transition ${
                             active
-                              ? "border-teal-300 bg-teal-50"
+                              ? "border-rose-300 bg-rose-50"
                               : "border-[var(--border)] hover:bg-slate-50"
                           }`}
                         >
@@ -163,7 +166,7 @@ function Navbar({ cartCount }) {
                                 setIsAddressOpen(false)
                                 navigate(`/addresses/${address.id}/edit`)
                               }}
-                              className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-white px-2 py-1 text-xs font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700"
+                              className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-white px-2 py-1 text-xs font-semibold text-slate-700 transition hover:border-rose-200 hover:text-rose-700"
                             >
                               <Pencil size={12} />
                               Edit
@@ -186,7 +189,7 @@ function Navbar({ cartCount }) {
                       setIsAddressOpen(false)
                       navigate("/addresses/new")
                     }}
-                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-3 py-2.5 text-sm font-semibold text-teal-700 transition hover:bg-teal-100"
+                    className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
                   >
                     <Plus size={14} />
                     Add new address
@@ -198,7 +201,7 @@ function Navbar({ cartCount }) {
 
           <Link
             to="/"
-            className="order-2 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-teal-700 sm:order-none"
+            className="order-2 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-rose-700 sm:order-none"
           >
             <Home size={22} />
           </Link>
@@ -206,12 +209,12 @@ function Navbar({ cartCount }) {
           {role !== "ADMIN" && (
             <Link
               to="/cart"
-              className="relative order-2 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-teal-700 sm:order-none"
+              className="relative order-2 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-rose-700 sm:order-none"
             >
               <ShoppingCart size={22} />
 
               {cartCount > 0 && (
-                <span className="absolute -right-2 -top-1.5 rounded-full bg-teal-600 px-2 py-0.5 text-xs font-semibold text-white">
+                <span className="absolute -right-2 -top-1.5 rounded-full bg-rose-600 px-2 py-0.5 text-xs font-semibold text-white">
                   {cartCount}
                 </span>
               )}
@@ -221,7 +224,7 @@ function Navbar({ cartCount }) {
           {token && role !== "ADMIN" && (
             <Link
               to="/orders"
-              className="order-2 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-teal-700 sm:order-none"
+              className="order-2 rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-rose-700 sm:order-none"
             >
               <PackageCheck size={22} />
             </Link>
@@ -230,7 +233,7 @@ function Navbar({ cartCount }) {
           {token && role === "ADMIN" && (
             <Link
               to="/admin"
-              className="order-2 inline-flex items-center gap-1 rounded-xl border border-teal-200 bg-teal-50 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-700 transition hover:bg-teal-100 sm:order-none"
+              className="order-2 inline-flex items-center gap-1 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-700 transition hover:bg-rose-100 sm:order-none"
             >
               <Shield size={14} />
               Admin
@@ -259,3 +262,4 @@ function Navbar({ cartCount }) {
 }
 
 export default Navbar
+

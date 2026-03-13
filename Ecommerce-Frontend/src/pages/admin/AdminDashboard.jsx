@@ -22,7 +22,7 @@ const AdminDashboard = () => {
   const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
-    document.title = "Admin Dashboard | Home Chemicals"
+    document.title = "Admin Dashboard | Urban Threads"
   }, [])
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
                 <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-500">{stat.label}</p>
                 <div className="mt-3 flex items-center justify-between">
                   <p className="font-display text-3xl font-bold text-slate-900">{stat.value}</p>
-                  <div className="rounded-xl bg-teal-50 p-2 text-teal-700">
+                  <div className="rounded-xl bg-rose-50 p-2 text-rose-700">
                     <stat.icon size={18} />
                   </div>
                 </div>
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
               </div>
               <button
                 onClick={() => navigate("/admin/orders")}
-                className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 sm:w-auto"
+                className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:text-rose-700 sm:w-auto"
               >
                 Manage orders
               </button>
@@ -144,7 +144,7 @@ const AdminDashboard = () => {
                     <button
                       key={order.orderId}
                       onClick={() => navigate(`/admin/orders?focus=${order.orderId}`)}
-                      className="flex w-full flex-col gap-2 rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-left transition hover:border-teal-200 md:flex-row md:items-center md:justify-between"
+                      className="flex w-full flex-col gap-2 rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-left transition hover:border-rose-200 md:flex-row md:items-center md:justify-between"
                     >
                       <div>
                         <p className="text-sm font-bold text-slate-900">Order #{order.orderId}</p>
@@ -159,7 +159,7 @@ const AdminDashboard = () => {
                         >
                           {statusMeta.label}
                         </span>
-                        <p className="font-semibold text-teal-700">{formatCurrency(order.totalAmount)}</p>
+                        <p className="font-semibold text-rose-700">{formatCurrency(order.totalAmount)}</p>
                       </div>
                     </button>
                   )
@@ -178,3 +178,5 @@ const AdminDashboard = () => {
 }
 
 export default AdminDashboard
+
+

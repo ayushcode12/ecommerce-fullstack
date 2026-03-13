@@ -18,7 +18,7 @@ const AdminShell = ({ title, subtitle, actions = null, children }) => {
           <aside className="surface-card rounded-3xl p-4 lg:sticky lg:top-[96px] lg:h-fit lg:p-5">
             <Link
               to="/admin"
-              className="mb-4 inline-flex items-center gap-2 rounded-2xl bg-teal-50 px-3 py-2 text-sm font-semibold text-teal-700"
+              className="mb-4 inline-flex items-center gap-2 rounded-2xl bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700"
             >
               <BarChart3 size={15} />
               Admin Control
@@ -33,7 +33,7 @@ const AdminShell = ({ title, subtitle, actions = null, children }) => {
                   className={({ isActive }) =>
                     `inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition ${
                       isActive
-                        ? "border border-teal-200 bg-teal-50 text-teal-700"
+                        ? "border border-rose-200 bg-rose-50 text-rose-700"
                         : "border border-transparent text-slate-700 hover:border-[var(--border)] hover:bg-white"
                     }`
                   }
@@ -49,7 +49,7 @@ const AdminShell = ({ title, subtitle, actions = null, children }) => {
             <section className="surface-card rounded-3xl p-5 md:p-8">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
                     Admin Panel
                   </p>
                   <h1 className="mt-1 font-display text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">
@@ -70,3 +70,4 @@ const AdminShell = ({ title, subtitle, actions = null, children }) => {
 }
 
 export default AdminShell
+

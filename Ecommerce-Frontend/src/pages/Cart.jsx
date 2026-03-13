@@ -39,7 +39,7 @@ const Cart = ({ refreshCartCount }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    document.title = "Your Cart | Home Chemicals"
+    document.title = "Your Cart | Urban Threads"
   }, [])
 
   const fetchCartItems = async () => {
@@ -142,7 +142,7 @@ const Cart = ({ refreshCartCount }) => {
         <div className="surface-card rounded-3xl p-5 md:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
                 Checkout
               </p>
               <h1 className="mt-1 font-display text-2xl font-bold text-slate-900 sm:text-3xl">
@@ -152,7 +152,7 @@ const Cart = ({ refreshCartCount }) => {
                 Review items, delivery details, and payment summary before placing order.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700">
               <Package size={15} />
               {itemCount} item{itemCount === 1 ? "" : "s"}
             </div>
@@ -186,8 +186,8 @@ const Cart = ({ refreshCartCount }) => {
         ) : (
           <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
             <div className="space-y-4">
-              <div className="surface-card rounded-2xl border-2 border-teal-200 bg-gradient-to-br from-teal-50/70 to-white p-4 text-sm text-slate-700 shadow-lg">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-teal-600 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white">
+              <div className="surface-card rounded-2xl border-2 border-rose-200 bg-gradient-to-br from-rose-50/70 to-white p-4 text-sm text-slate-700 shadow-lg">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-rose-600 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white">
                   <MapPin size={12} />
                   Current Delivery Address
                 </div>
@@ -211,20 +211,20 @@ const Cart = ({ refreshCartCount }) => {
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <button
                       onClick={handleAddNewAddress}
-                      className="inline-flex w-full items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-3.5 py-2 text-sm font-semibold text-teal-700 transition hover:bg-teal-100 hover:text-teal-800 sm:w-auto"
+                      className="inline-flex w-full items-center justify-center rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 hover:text-rose-800 sm:w-auto"
                     >
                       Add New
                     </button>
                     <button
                       onClick={handleEditSelectedAddress}
                       disabled={!selectedAddress}
-                      className="inline-flex w-full items-center justify-center rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                      className="inline-flex w-full items-center justify-center rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                     >
                       Edit
                     </button>
                     <button
                       onClick={handleToggleSavedAddresses}
-                      className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700 sm:min-w-[96px] sm:w-auto"
+                      className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:text-rose-700 sm:min-w-[96px] sm:w-auto"
                     >
                       Saved
                       <ChevronDown size={15} />
@@ -240,7 +240,7 @@ const Cart = ({ refreshCartCount }) => {
                 </div>
 
                 {isAddressPickerOpen && (
-                  <div className="mt-4 rounded-xl border border-teal-200 bg-white p-3 shadow-sm">
+                  <div className="mt-4 rounded-xl border border-rose-200 bg-white p-3 shadow-sm">
                     {loadingAddresses ? (
                       <p className="text-sm text-slate-500">Loading saved addresses...</p>
                     ) : addresses.length === 0 ? (
@@ -248,7 +248,7 @@ const Cart = ({ refreshCartCount }) => {
                         <p className="text-sm text-slate-500">No saved address found.</p>
                         <button
                           onClick={() => navigate("/addresses/new")}
-                          className="text-sm font-semibold text-teal-700 hover:text-teal-800"
+                          className="text-sm font-semibold text-rose-700 hover:text-rose-800"
                         >
                           Add a new address
                         </button>
@@ -263,7 +263,7 @@ const Cart = ({ refreshCartCount }) => {
                             <div
                               key={address.id}
                               className={`rounded-lg border p-3 ${
-                                isActive ? "border-teal-400 bg-teal-50 shadow-sm" : "border-[var(--border)] bg-white"
+                                isActive ? "border-rose-400 bg-rose-50 shadow-sm" : "border-[var(--border)] bg-white"
                               }`}
                             >
                               <div className="flex items-start justify-between gap-3">
@@ -282,8 +282,8 @@ const Cart = ({ refreshCartCount }) => {
                                   onClick={() => handleSelectSavedAddress(address.id)}
                                   className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold ${
                                     isActive
-                                      ? "bg-teal-100 text-teal-700"
-                                      : "border border-[var(--border)] bg-white text-slate-700 hover:border-teal-200 hover:text-teal-700"
+                                      ? "bg-rose-100 text-rose-700"
+                                      : "border border-[var(--border)] bg-white text-slate-700 hover:border-rose-200 hover:text-rose-700"
                                   } disabled:cursor-not-allowed disabled:opacity-70`}
                                 >
                                   {isActive ? (
@@ -324,21 +324,21 @@ const Cart = ({ refreshCartCount }) => {
                       <div className="flex items-center gap-3">
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                        className="rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-teal-700"
+                        className="rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-rose-700"
                       >
                         <Minus size={14} />
                       </button>
                       <span className="min-w-8 text-center font-semibold text-slate-800">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                        className="rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-teal-700"
+                        className="rounded-lg p-2 text-slate-700 transition hover:bg-slate-100 hover:text-rose-700"
                       >
                         <Plus size={14} />
                       </button>
                       </div>
                     </div>
 
-                    <div className="font-display text-xl font-bold text-teal-700">
+                    <div className="font-display text-xl font-bold text-rose-700">
                       Rs {item.price * item.quantity}
                     </div>
                   </div>
@@ -376,7 +376,7 @@ const Cart = ({ refreshCartCount }) => {
 
                 <div className="flex items-center justify-between">
                   <p className="font-semibold text-slate-900">Estimated payable</p>
-                  <p className="font-display text-2xl font-bold text-teal-700">Rs {payableAmount}</p>
+                  <p className="font-display text-2xl font-bold text-rose-700">Rs {payableAmount}</p>
                 </div>
 
                 <button
@@ -401,29 +401,29 @@ const Cart = ({ refreshCartCount }) => {
 
                 <div className="mt-4 space-y-3">
                   <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-sm text-slate-700">
-                    <Wallet size={16} className="text-teal-700" />
+                    <Wallet size={16} className="text-rose-700" />
                     UPI / Wallet
                     <span className="ml-auto text-xs font-semibold text-slate-500">Planned</span>
                   </div>
                   <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-sm text-slate-700">
-                    <CreditCard size={16} className="text-teal-700" />
+                    <CreditCard size={16} className="text-rose-700" />
                     Card Payment
                     <span className="ml-auto text-xs font-semibold text-slate-500">Planned</span>
                   </div>
                   <div className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-sm text-slate-700">
-                    <Landmark size={16} className="text-teal-700" />
+                    <Landmark size={16} className="text-rose-700" />
                     Net Banking
                     <span className="ml-auto text-xs font-semibold text-slate-500">Planned</span>
                   </div>
                 </div>
 
-                <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-700">
+                <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
                   <ShieldCheck size={14} />
                   Payment step ready for secure gateway integration
                 </div>
 
                 <p className="mt-3 inline-flex items-center gap-2 text-xs text-slate-500">
-                  <BadgeCheck size={13} className="text-teal-700" />
+                  <BadgeCheck size={13} className="text-rose-700" />
                   Current checkout still completes order directly.
                 </p>
               </div>
@@ -436,3 +436,5 @@ const Cart = ({ refreshCartCount }) => {
 }
 
 export default Cart
+
+

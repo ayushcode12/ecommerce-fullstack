@@ -78,7 +78,7 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
       </div>
 
       <div className="space-y-3 p-4 sm:space-y-4 sm:p-6">
-        <span className="inline-flex rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
+        <span className="inline-flex rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
           {product.categoryName}
         </span>
 
@@ -86,12 +86,16 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
           {product.name}
         </h3>
 
+        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
+          In stock: {product.stockQuantity}
+        </p>
+
         <p className="line-clamp-3 text-sm leading-relaxed text-slate-600">
           {product.description}
         </p>
 
         <div className="mt-5 flex flex-col items-start gap-3 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-display text-xl font-bold text-teal-700 sm:text-2xl">Rs {product.price}</p>
+          <p className="font-display text-xl font-bold text-rose-700 sm:text-2xl">Rs {product.price}</p>
 
           {quantity > 0 ? (
             <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-2 py-1">
@@ -120,7 +124,7 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
               disabled={updatingQuantity}
               onClick={handleAddToCart}
               className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 sm:w-auto ${
-                updatingQuantity ? "cursor-not-allowed bg-slate-400" : "bg-teal-600 hover:bg-teal-700"
+                updatingQuantity ? "cursor-not-allowed bg-slate-400" : "bg-rose-600 hover:bg-rose-700"
               }`}
             >
               <ShoppingBag size={14} />
@@ -134,3 +138,4 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
 }
 
 export default ProductCard
+

@@ -33,7 +33,7 @@ const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
   const categoryTitle = products.length > 0 ? products[0].categoryName : "Category"
 
   useEffect(() => {
-    document.title = `${categoryTitle} | Home Chemicals`
+    document.title = `${categoryTitle} | Urban Threads`
   }, [categoryTitle])
 
   return (
@@ -43,7 +43,7 @@ const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
 
       <div className="mx-auto w-full max-w-[1600px] space-y-6 px-3 py-5 sm:space-y-8 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <div className="surface-card rounded-3xl p-5 md:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-700">
             Category collection
           </p>
           <h1 className="mt-2 font-display text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">
@@ -85,3 +85,5 @@ const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
 }
 
 export default CategoryPage
+
+

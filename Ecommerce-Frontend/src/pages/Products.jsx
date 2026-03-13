@@ -32,7 +32,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
   const requestIdRef = useRef(0)
 
   useEffect(() => {
-    document.title = "Shop Products | Home Chemicals"
+    document.title = "Shop Products | Urban Threads"
   }, [])
 
   useEffect(() => {
@@ -146,7 +146,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
       <div className="mx-auto w-full max-w-[1600px] space-y-6 px-3 py-5 sm:space-y-8 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-700">
               Catalog
             </p>
             <h1 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">
@@ -253,3 +253,5 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
 }
 
 export default Products
+
+

@@ -7,21 +7,21 @@ const Footer = () => {
       <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 sm:gap-10 sm:px-6 md:py-12 lg:grid-cols-4 lg:px-8">
         <div className="space-y-4">
           <h2 className="font-display text-2xl font-bold text-slate-900">
-            Home <span className="text-teal-600">Chemicals</span>
+            Urban <span className="text-rose-600">Threads</span>
           </h2>
           <p className="text-sm leading-relaxed text-slate-600">
-            Premium cleaning solutions trusted by thousands across India.
-            Quality, safety, and performance in every product.
+            Trend-first fashion trusted by shoppers across India.
+            Comfort, style, and quality in every outfit.
           </p>
 
           <div className="flex gap-4 pt-2">
-            <button className="rounded-full border border-[var(--border)] bg-white p-2 text-slate-600 transition hover:border-teal-200 hover:text-teal-700">
+            <button className="rounded-full border border-[var(--border)] bg-white p-2 text-slate-600 transition hover:border-rose-200 hover:text-rose-700">
               <FaFacebookF size={14} />
             </button>
-            <button className="rounded-full border border-[var(--border)] bg-white p-2 text-slate-600 transition hover:border-teal-200 hover:text-teal-700">
+            <button className="rounded-full border border-[var(--border)] bg-white p-2 text-slate-600 transition hover:border-rose-200 hover:text-rose-700">
               <FaInstagram size={14} />
             </button>
-            <button className="rounded-full border border-[var(--border)] bg-white p-2 text-slate-600 transition hover:border-teal-200 hover:text-teal-700">
+            <button className="rounded-full border border-[var(--border)] bg-white p-2 text-slate-600 transition hover:border-rose-200 hover:text-rose-700">
               <FaTwitter size={14} />
             </button>
           </div>
@@ -33,27 +33,27 @@ const Footer = () => {
           </h3>
           <ul className="space-y-3 text-sm text-slate-700">
             <li>
-              <Link to="/" className="transition hover:text-teal-700">
+              <Link to="/" className="transition hover:text-rose-700">
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/products" className="transition hover:text-teal-700">
+              <Link to="/products" className="transition hover:text-rose-700">
                 Shop
               </Link>
             </li>
             <li>
-              <Link to="/cart" className="transition hover:text-teal-700">
+              <Link to="/cart" className="transition hover:text-rose-700">
                 Cart
               </Link>
             </li>
             <li>
-              <Link to="/orders" className="transition hover:text-teal-700">
+              <Link to="/orders" className="transition hover:text-rose-700">
                 Orders
               </Link>
             </li>
             <li>
-              <Link to="/addresses/new" className="transition hover:text-teal-700">
+              <Link to="/addresses/new" className="transition hover:text-rose-700">
                 Add Address
               </Link>
             </li>
@@ -65,10 +65,10 @@ const Footer = () => {
             Customer Service
           </h3>
           <ul className="space-y-3 text-sm text-slate-700">
-            <li className="cursor-pointer transition hover:text-teal-700">Contact Us</li>
-            <li className="cursor-pointer transition hover:text-teal-700">Shipping Policy</li>
-            <li className="cursor-pointer transition hover:text-teal-700">Refund Policy</li>
-            <li className="cursor-pointer transition hover:text-teal-700">Privacy Policy</li>
+            <li className="cursor-pointer transition hover:text-rose-700">Contact Us</li>
+            <li className="cursor-pointer transition hover:text-rose-700">Shipping Policy</li>
+            <li className="cursor-pointer transition hover:text-rose-700">Refund Policy</li>
+            <li className="cursor-pointer transition hover:text-rose-700">Privacy Policy</li>
           </ul>
         </div>
 
@@ -77,16 +77,17 @@ const Footer = () => {
             Contact
           </h3>
           <p className="text-sm text-slate-700">Agra, Uttar Pradesh, India</p>
-          <p className="mt-2 text-sm text-slate-700">support@homechemicals.com</p>
+          <p className="mt-2 text-sm text-slate-700">support@urbanthreads.com</p>
           <p className="mt-2 text-sm text-slate-700">+91 98765 43210</p>
         </div>
       </div>
 
       <div className="border-t border-[var(--border)] py-5 text-center text-sm text-slate-500">
-        Copyright {new Date().getFullYear()} Home Chemicals. All rights reserved.
+        Copyright {new Date().getFullYear()} Urban Threads. All rights reserved.
       </div>
     </footer>
   )
 }
 
 export default Footer
+

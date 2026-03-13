@@ -16,7 +16,7 @@ const ProductDetails = ({ refreshCartCount }) => {
 
   useEffect(() => {
     if (product) {
-      document.title = `${product.name} | Home Chemicals`
+      document.title = `${product.name} | Urban Threads`
     }
   }, [product])
 
@@ -108,7 +108,7 @@ const ProductDetails = ({ refreshCartCount }) => {
                     onClick={() => setActiveImage(imageUrl)}
                     className={`overflow-hidden rounded-xl border ${
                       activeImage === imageUrl
-                        ? "border-teal-500 ring-2 ring-teal-100"
+                        ? "border-rose-500 ring-2 ring-rose-100"
                         : "border-[var(--border)]"
                     }`}
                   >
@@ -127,7 +127,7 @@ const ProductDetails = ({ refreshCartCount }) => {
           </div>
 
           <div className="space-y-4 sm:space-y-5">
-            <span className="inline-flex rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
+            <span className="inline-flex rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
               {product.categoryName}
             </span>
 
@@ -137,13 +137,13 @@ const ProductDetails = ({ refreshCartCount }) => {
 
             <p className="text-slate-600">{product.description}</p>
 
-            <div className="font-display text-2xl font-bold text-teal-700 sm:text-3xl">Rs {product.price}</div>
+            <div className="font-display text-2xl font-bold text-rose-700 sm:text-3xl">Rs {product.price}</div>
 
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-4 text-sm text-slate-700">
               <p>In stock: {product.stockQuantity}</p>
               {selectedAddress ? (
                 <p className="mt-2 inline-flex items-center gap-2 text-slate-600">
-                  <MapPin size={14} className="text-teal-700" />
+                  <MapPin size={14} className="text-rose-700" />
                   Delivering to {selectedAddress.city}, {selectedAddress.state}
                 </p>
               ) : (
@@ -155,7 +155,7 @@ const ProductDetails = ({ refreshCartCount }) => {
               disabled={adding}
               onClick={handleAddToCart}
               className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-8 py-3 text-sm font-semibold text-white sm:w-auto ${
-                adding ? "cursor-not-allowed bg-slate-400" : "bg-teal-600 hover:bg-teal-700"
+                adding ? "cursor-not-allowed bg-slate-400" : "bg-rose-600 hover:bg-rose-700"
               }`}
             >
               <ShoppingBag size={16} />
@@ -169,3 +169,5 @@ const ProductDetails = ({ refreshCartCount }) => {
 }
 
 export default ProductDetails
+
+

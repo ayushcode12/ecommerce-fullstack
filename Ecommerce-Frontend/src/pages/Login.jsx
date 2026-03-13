@@ -66,27 +66,27 @@ const Login = () => {
   }
 
   return (
-    <div className="relative flex min-h-screen items-start overflow-hidden bg-gradient-to-br from-slate-900 via-teal-900 to-cyan-900 px-3 py-4 sm:items-center sm:px-4 md:px-6 md:py-6">
-      <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-teal-300/25 blur-3xl" />
+    <div className="relative flex min-h-screen items-start overflow-hidden bg-gradient-to-br from-slate-900 via-rose-900 to-amber-900 px-3 py-4 sm:items-center sm:px-4 md:px-6 md:py-6">
+      <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-rose-300/25 blur-3xl" />
       <div className="absolute -right-24 bottom-8 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
 
       <div className="relative mx-auto grid w-full max-w-7xl overflow-hidden rounded-[1.5rem] border border-white/20 bg-white/95 shadow-2xl sm:rounded-[2rem] lg:min-h-[78vh] lg:grid-cols-2">
-        <div className="hidden bg-gradient-to-br from-teal-600 to-cyan-700 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal-100">Welcome back</p>
+        <div className="hidden bg-gradient-to-br from-rose-600 to-amber-700 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-rose-100">Welcome back</p>
           <div>
-            <h1 className="mt-4 font-display text-5xl font-bold leading-tight">Clean home, less effort.</h1>
-            <p className="mt-4 max-w-md text-base text-teal-50">
+            <h1 className="mt-4 font-display text-5xl font-bold leading-tight">Dress sharp, feel confident.</h1>
+            <p className="mt-4 max-w-md text-base text-rose-50">
               Login to continue with saved addresses, your cart, and order tracking.
             </p>
           </div>
-          <div className="rounded-2xl border border-white/25 bg-white/10 p-4 text-sm text-teal-50">
-            Trusted checkout experience with secure ordering.
+          <div className="rounded-2xl border border-white/25 bg-white/10 p-4 text-sm text-rose-50">
+            Trusted fashion checkout with secure ordering.
           </div>
         </div>
 
         <div className="flex flex-col justify-center p-5 sm:p-6 md:p-10 lg:p-12">
           <h2 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl">Sign in</h2>
-          <p className="mt-2 text-sm text-slate-600">Access your Home Chemicals account.</p>
+          <p className="mt-2 text-sm text-slate-600">Access your Urban Threads account.</p>
 
           <form onSubmit={handleLogin} className="mt-6 space-y-5 sm:mt-8 sm:space-y-6">
             <label className="field-group">
@@ -133,7 +133,7 @@ const Login = () => {
 
           <p className="mt-6 text-center text-sm text-slate-600">
             Do not have an account?{" "}
-            <Link to="/register" className="font-semibold text-teal-700 hover:text-teal-800">
+            <Link to="/register" className="font-semibold text-rose-700 hover:text-rose-800">
               Register
             </Link>
           </p>
@@ -144,3 +144,5 @@ const Login = () => {
 }
 
 export default Login
+
+

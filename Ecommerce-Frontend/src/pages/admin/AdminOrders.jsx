@@ -24,7 +24,7 @@ const AdminOrders = () => {
   const [totalPages, setTotalPages] = useState(0)
 
   useEffect(() => {
-    document.title = "Admin Orders | Home Chemicals"
+    document.title = "Admin Orders | Urban Threads"
   }, [])
 
   const fetchOrders = async (targetPage = 0) => {
@@ -65,8 +65,8 @@ const AdminOrders = () => {
     const targetCard = document.getElementById(`admin-order-${focusOrderId}`)
     if (targetCard) {
       targetCard.scrollIntoView({ behavior: "smooth", block: "center" })
-      targetCard.classList.add("ring-2", "ring-teal-200")
-      setTimeout(() => targetCard.classList.remove("ring-2", "ring-teal-200"), 1600)
+      targetCard.classList.add("ring-2", "ring-rose-200")
+      setTimeout(() => targetCard.classList.remove("ring-2", "ring-rose-200"), 1600)
     }
   }, [focusOrderId, orders])
 
@@ -96,7 +96,7 @@ const AdminOrders = () => {
       actions={
         <button
           onClick={() => fetchOrders(page)}
-          className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-200 hover:text-teal-700"
+          className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-rose-200 hover:text-rose-700"
         >
           <RefreshCw size={14} />
           Refresh
@@ -187,25 +187,25 @@ const AdminOrders = () => {
                     >
                       {statusMeta.label}
                     </span>
-                    <p className="mt-2 font-semibold text-teal-700">{formatCurrency(order.totalAmount)}</p>
+                    <p className="mt-2 font-semibold text-rose-700">{formatCurrency(order.totalAmount)}</p>
                   </div>
                 </div>
 
                 <div className="mt-3 grid gap-3 text-sm md:grid-cols-2 xl:grid-cols-4">
                   <p className="inline-flex items-center gap-2 text-slate-700">
-                    <User size={14} className="text-teal-700" />
+                    <User size={14} className="text-rose-700" />
                     {order.userName || "Unknown customer"}
                   </p>
                   <p className="inline-flex items-center gap-2 text-slate-700">
-                    <Mail size={14} className="text-teal-700" />
+                    <Mail size={14} className="text-rose-700" />
                     {order.userEmail || "No email"}
                   </p>
                   <p className="inline-flex items-center gap-2 text-slate-700">
-                    <Phone size={14} className="text-teal-700" />
+                    <Phone size={14} className="text-rose-700" />
                     {order.shippingPhone || "No phone"}
                   </p>
                   <p className="inline-flex items-center gap-2 text-slate-700">
-                    <CheckCircle2 size={14} className="text-teal-700" />
+                    <CheckCircle2 size={14} className="text-rose-700" />
                     {order.items?.length || 0} products
                   </p>
                 </div>
@@ -221,8 +221,8 @@ const AdminOrders = () => {
                         onClick={() => updateOrderStatus(order.orderId, status)}
                         className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition ${
                           order.status === status
-                            ? "bg-teal-100 text-teal-700"
-                            : "border border-[var(--border)] bg-white text-slate-700 hover:border-teal-200 hover:text-teal-700"
+                            ? "bg-rose-100 text-rose-700"
+                            : "border border-[var(--border)] bg-white text-slate-700 hover:border-rose-200 hover:text-rose-700"
                         } disabled:cursor-not-allowed disabled:opacity-50`}
                       >
                         {status}
@@ -265,3 +265,5 @@ const AdminOrders = () => {
 }
 
 export default AdminOrders
+
+
