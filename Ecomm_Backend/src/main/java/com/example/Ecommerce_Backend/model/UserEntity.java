@@ -34,6 +34,11 @@ public class UserEntity {
 
     private LocalDateTime refreshTokenExpiresAt;
 
+    @Column(length = 512)
+    private String resetPasswordTokenHash;
+
+    private LocalDateTime resetPasswordTokenExpiresAt;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

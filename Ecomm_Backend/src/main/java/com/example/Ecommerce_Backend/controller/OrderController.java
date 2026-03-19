@@ -35,4 +35,19 @@ public class OrderController {
         return orderService.getOrderDetails(orderId);
     }
 
+    @PostMapping("/{orderId}/cancel")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<OrderResponseDTO> cancelMyOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.cancelMyOrder(orderId));
+    }
+
+    @PostMapping("/{orderId}/reorder")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> reorderPastOrder(@PathVariable Long orderId) {
+        OrderService.ReorderResult result = orderService.reorderPastOrder(orderId);
+        return ResponseEntity.ok(
+                "Reorder completed. Added " + result.addedItems() + " item(s), skipped " + result.skippedItems() + " item(s)."
+        );
+    }
+
 }

@@ -7,10 +7,14 @@ import { Search } from "lucide-react"
 const ALLOWED_SORT_BY = new Set(["id", "price", "name"])
 const ALLOWED_DIRECTION = new Set(["asc", "desc"])
 
-const Products = ({ refreshCartCount, cartQuantities }) => {
+const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishlistIds }) => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const initialKeyword = searchParams.get("keyword")?.trim() || ""
+  const initialCategoryIdParam = searchParams.get("categoryId")
+  const parsedCategoryId = initialCategoryIdParam ? Number(initialCategoryIdParam) : null
+  const initialCategoryId =
+    Number.isFinite(parsedCategoryId) && parsedCategoryId > 0 ? parsedCategoryId : null
   const initialSortByParam = searchParams.get("sortBy") || "id"
   const initialDirectionParam = searchParams.get("direction") || "asc"
   const initialSortBy = ALLOWED_SORT_BY.has(initialSortByParam) ? initialSortByParam : "id"
@@ -23,16 +27,32 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
   const [totalPages, setTotalPages] = useState(0)
   const [searchInput, setSearchInput] = useState(initialKeyword)
   const [keyword, setKeyword] = useState(initialKeyword)
+  const [categoryId, setCategoryId] = useState(initialCategoryId)
   const [sortBy, setSortBy] = useState(initialSortBy)
   const [direction, setDirection] = useState(initialDirection)
   const [loadingInitial, setLoadingInitial] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
+  const [categories, setCategories] = useState([])
 
   const loadMoreRef = useRef(null)
   const requestIdRef = useRef(0)
 
   useEffect(() => {
     document.title = "Shop Products | Urban Threads"
+  }, [])
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get("/categories")
+        setCategories(Array.isArray(response.data) ? response.data : [])
+      } catch (error) {
+        console.log("Failed to fetch categories:", error.response?.data || error.message)
+        setCategories([])
+      }
+    }
+
+    fetchCategories()
   }, [])
 
   useEffect(() => {
@@ -53,6 +73,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
     const nextParams = new URLSearchParams()
 
     if (keyword) nextParams.set("keyword", keyword)
+    if (categoryId) nextParams.set("categoryId", String(categoryId))
     if (sortBy !== "id") nextParams.set("sortBy", sortBy)
     if (direction !== "asc") nextParams.set("direction", direction)
 
@@ -62,7 +83,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
     if (current !== next) {
       setSearchParams(nextParams, { replace: true })
     }
-  }, [keyword, sortBy, direction, searchParams, setSearchParams])
+  }, [keyword, categoryId, sortBy, direction, searchParams, setSearchParams])
 
   useEffect(() => {
     const currentRequestId = requestIdRef.current + 1
@@ -81,6 +102,7 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
             page,
             size: 6,
             keyword,
+            categoryId,
             sortBy,
             direction
           }
@@ -114,9 +136,10 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
     }
 
     fetchProducts()
-  }, [page, keyword, sortBy, direction])
+  }, [page, keyword, categoryId, sortBy, direction])
 
   const hasMore = page + 1 < totalPages
+  const selectedCategory = categories.find((category) => Number(category.id) === Number(categoryId))
 
   useEffect(() => {
     if (!loadMoreRef.current || !hasMore || loadingInitial || loadingMore) {
@@ -164,13 +187,16 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
         <section className="surface-card rounded-3xl p-4 md:p-5">
           <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-[1fr_240px]">
             <label className="relative">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search
+                size={18}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 type="text"
                 placeholder="Search products by name or keyword"
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                className="field-input pl-11"
+                className="field-input !pl-12"
               />
             </label>
 
@@ -195,6 +221,24 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
               <option value="name-desc">Name: Z to A</option>
             </select>
           </div>
+          {categoryId && (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
+                Category: {selectedCategory?.name || `#${categoryId}`}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setPage(0)
+                  setProducts([])
+                  setCategoryId(null)
+                }}
+                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700"
+              >
+                Clear category filter
+              </button>
+            </div>
+          )}
         </section>
 
         <section>
@@ -228,6 +272,8 @@ const Products = ({ refreshCartCount, cartQuantities }) => {
                   product={product}
                   refreshCartCount={refreshCartCount}
                   cartQuantity={cartQuantities?.[product.id] || 0}
+                  wishlistIds={wishlistIds}
+                  refreshWishlistIds={refreshWishlistIds}
                 />
               ))}
             </div>

@@ -124,6 +124,12 @@ const Login = () => {
                 {errors.password && <small className="field-error">{errors.password}</small>}
               </label>
 
+              <div className="-mt-2 text-right">
+                <Link to="/forgot-password" className="text-xs font-semibold text-cyan-700 hover:text-cyan-800">
+                  Forgot password?
+                </Link>
+              </div>
+
               <button type="submit" disabled={loading} className="btn-primary w-full">
                 <span className="inline-flex items-center gap-2">
                   <LogIn size={16} />

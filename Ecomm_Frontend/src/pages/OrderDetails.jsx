@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import {
   ArrowLeft,
+  Banknote,
   CalendarClock,
   CheckCircle2,
   CircleDashed,
@@ -13,6 +14,7 @@ import {
   Truck,
   XCircle
 } from "lucide-react"
+import toast from "react-hot-toast"
 import api from "../api/axiosInstance"
 import getApiErrorMessage from "../utils/getApiErrorMessage"
 import {
@@ -86,12 +88,14 @@ const getStepCaption = (state) => {
   return "Pending"
 }
 
-const OrderDetails = () => {
+const OrderDetails = ({ refreshCartCount }) => {
   const { orderId } = useParams()
   const navigate = useNavigate()
   const [orderDetails, setOrderDetails] = useState(null)
   const [loadingDetails, setLoadingDetails] = useState(true)
   const [errorMessage, setErrorMessage] = useState("")
+  const [cancelingOrder, setCancelingOrder] = useState(false)
+  const [reordering, setReordering] = useState(false)
 
   useEffect(() => {
     document.title = `Order #${orderId} | Urban Threads`
@@ -201,6 +205,89 @@ const OrderDetails = () => {
     shippingName || shippingLine1 || shippingLine2 || cityStatePostal || shippingPhone
   )
 
+  // Payment status logic
+  const isCOD = orderDetails.paymentMethod === "Cash on Delivery"
+  const isOnline = orderDetails.paymentMethod === "Online (Razorpay)"
+  const orderStatus = String(orderDetails.status || "").toUpperCase()
+
+  const paymentStatus = (() => {
+    if (isOnline) {
+      return {
+        label: "Paid Online",
+        sublabel: "Payment captured via Razorpay",
+        icon: CreditCard,
+        badgeClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
+        heroValue: "Paid",
+        totalLabel: "Total Paid"
+      }
+    }
+    if (isCOD) {
+      if (orderStatus === "DELIVERED") {
+        return {
+          label: "Collected on Delivery",
+          sublabel: "Cash collected at the time of delivery",
+          icon: CheckCircle2,
+          badgeClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
+          heroValue: "Collected",
+          totalLabel: "Total Paid"
+        }
+      }
+      if (orderStatus === "CANCELED") {
+        return {
+          label: "Not Charged",
+          sublabel: "Order was cancelled before delivery",
+          icon: XCircle,
+          badgeClass: "border-slate-200 bg-slate-50 text-slate-500",
+          heroValue: "N/A",
+          totalLabel: "Order Total"
+        }
+      }
+      return {
+        label: "Pay on Delivery",
+        sublabel: "Cash to be paid when your order arrives",
+        icon: Banknote,
+        badgeClass: "border-amber-200 bg-amber-50 text-amber-700",
+        heroValue: "Pending",
+        totalLabel: "Total Due"
+      }
+    }
+    return null
+  })()
+
+  const canCancelOrder = ["PENDING", "CONFIRMED"].includes(orderStatus)
+  const canReorderOrder = ["DELIVERED", "CANCELED"].includes(orderStatus)
+
+  const handleCancelOrder = async () => {
+    const confirmed = window.confirm("Cancel this order? You can only cancel before shipping.")
+    if (!confirmed) return
+
+    try {
+      setCancelingOrder(true)
+      const response = await api.post(`/orders/${orderId}/cancel`)
+      setOrderDetails(response.data)
+      toast.success("Order canceled successfully")
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Failed to cancel order"))
+    } finally {
+      setCancelingOrder(false)
+    }
+  }
+
+  const handleReorder = async () => {
+    try {
+      setReordering(true)
+      const response = await api.post(`/orders/${orderId}/reorder`)
+      if (refreshCartCount) {
+        await refreshCartCount()
+      }
+      toast.success(response.data || "Items added to cart")
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Reorder failed"))
+    } finally {
+      setReordering(false)
+    }
+  }
+
   return (
     <div className="page-wrap animate-fadeIn">
       <div className="page-accent page-accent--left" />
@@ -215,40 +302,87 @@ const OrderDetails = () => {
           Back to Orders
         </button>
 
-        <section className="relative overflow-hidden rounded-3xl border border-rose-300 bg-gradient-to-r from-rose-700 via-rose-600 to-amber-700 p-5 text-white shadow-2xl sm:p-6 md:p-8">
-          <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-          <div className="absolute -left-14 bottom-0 h-36 w-36 rounded-full bg-amber-300/20 blur-2xl" />
+        <section className="surface-card overflow-hidden rounded-3xl border border-[var(--border)] p-0">
+          <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700 px-5 py-5 text-white sm:px-6 md:px-8">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-100">Order Tracking</p>
+                <h1 className="mt-1 font-display text-2xl font-bold sm:text-3xl md:text-4xl">
+                  Order #{orderDetails.orderId}
+                </h1>
+                <p className="mt-2 inline-flex items-center gap-2 text-sm text-blue-100">
+                  <CalendarClock size={15} />
+                  Placed on {formatOrderDate(orderDetails.createdAt)}
+                </p>
+              </div>
 
-          <div className="relative flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-100">Order Tracking</p>
-              <h1 className="mt-1 font-display text-2xl font-bold sm:text-3xl md:text-4xl">Order #{orderDetails.orderId}</h1>
-              <p className="mt-2 inline-flex items-center gap-2 text-sm text-rose-50">
-                <CalendarClock size={15} />
-                Placed on {formatOrderDate(orderDetails.createdAt)}
-              </p>
-            </div>
-
-            <div className="text-left md:text-right">
-              <span className="inline-flex rounded-full border border-white/35 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
-                {statusMeta.label}
-              </span>
-              <p className="mt-2 font-display text-2xl font-bold sm:text-3xl">{formatCurrency(totalPaidAmount)}</p>
+              <div className="text-left md:text-right">
+                <div className="flex flex-wrap items-center justify-start gap-1.5 md:justify-end">
+                  <span className="inline-flex rounded-full border border-white/35 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
+                    {statusMeta.label}
+                  </span>
+                  {orderDetails.paymentMethod === "Cash on Delivery" ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                      <Banknote size={11} />
+                      Cash on Delivery
+                    </span>
+                  ) : orderDetails.paymentMethod === "Online (Razorpay)" ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                      <CreditCard size={11} />
+                      Online &middot; Paid
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-2 font-display text-2xl font-bold sm:text-3xl">
+                  {formatCurrency(totalPaidAmount)}
+                </p>
+                {canCancelOrder && (
+                  <button
+                    onClick={handleCancelOrder}
+                    disabled={cancelingOrder}
+                    className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {cancelingOrder ? "Cancelling..." : "Cancel Order"}
+                  </button>
+                )}
+                {canReorderOrder && (
+                  <button
+                    onClick={handleReorder}
+                    disabled={reordering}
+                    className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {reordering ? "Reordering..." : "Reorder"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="relative mt-5 grid gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-3">
-            <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-rose-100">Items</p>
-              <p className="mt-1 text-lg font-bold">{itemCount}</p>
+          <div className="px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6 md:px-8 md:pb-8 md:pt-6">
+            <div className="mb-5 h-1 overflow-hidden rounded-full bg-slate-100 sm:mb-6">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+              style={{ width: `${progressPercent}%` }}
+            />
             </div>
-            <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-rose-100">Progress</p>
-              <p className="mt-1 text-lg font-bold">{Math.round(progressPercent)}%</p>
-            </div>
-            <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-rose-100">Expected</p>
-              <p className="mt-1 text-lg font-bold">{estimatedDelivery || "Closed"}</p>
+
+            <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3 md:grid-cols-4">
+              <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Items</p>
+                <p className="mt-1 text-lg font-bold text-slate-900">{itemCount}</p>
+              </div>
+              <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Progress</p>
+                <p className="mt-1 text-lg font-bold text-slate-900">{Math.round(progressPercent)}%</p>
+              </div>
+              <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Expected</p>
+                <p className="mt-1 text-lg font-bold text-slate-900">{estimatedDelivery || "Closed"}</p>
+              </div>
+              <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Payment</p>
+                <p className="mt-1 text-lg font-bold text-slate-900">{paymentStatus?.heroValue ?? "-"}</p>
+              </div>
             </div>
           </div>
         </section>
@@ -396,8 +530,21 @@ const OrderDetails = () => {
 
               <div className="my-4 border-t border-[var(--border)]" />
 
+              {paymentStatus && (() => {
+                const Icon = paymentStatus.icon
+                return (
+                  <div className={`mb-4 flex items-start gap-3 rounded-xl border p-3 ${paymentStatus.badgeClass}`}>
+                    <Icon size={16} className="mt-0.5 shrink-0" />
+                    <div>
+                      <p className="text-sm font-bold">{paymentStatus.label}</p>
+                      <p className="mt-0.5 text-xs font-medium opacity-80">{paymentStatus.sublabel}</p>
+                    </div>
+                  </div>
+                )
+              })()}
+
               <div className="flex items-center justify-between">
-                <p className="font-semibold text-slate-900">Total Paid</p>
+                <p className="font-semibold text-slate-900">{paymentStatus?.totalLabel ?? "Total"}</p>
                 <p className="font-display text-2xl font-bold text-rose-700">
                   {formatCurrency(totalPaidAmount)}
                 </p>
@@ -409,21 +556,9 @@ const OrderDetails = () => {
                     Detailed fee split is not available for this older order.
                   </p>
                 )}
-                <p className="inline-flex items-center gap-2 rounded-lg bg-rose-50 px-3 py-2 font-semibold text-rose-700">
-                  <ShieldCheck size={13} />
-                  Payment-ready summary aligned for gateway records
-                </p>
                 <p className="inline-flex items-center gap-2 text-slate-500">
                   <CheckCircle2 size={13} className="text-rose-700" />
                   Receipt ID: HC-{orderDetails.orderId}
-                </p>
-                <p className="inline-flex items-center gap-2 text-slate-500">
-                  <CreditCard size={13} className="text-rose-700" />
-                  Payment mode assignment can be plugged in next.
-                </p>
-                <p className="inline-flex items-center gap-2 text-slate-500">
-                  <PackageCheck size={13} className="text-rose-700" />
-                  Invoice generation can be attached from this breakdown.
                 </p>
               </div>
             </section>

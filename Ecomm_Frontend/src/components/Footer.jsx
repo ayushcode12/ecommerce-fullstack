@@ -65,10 +65,10 @@ const Footer = () => {
             Customer Care
           </h3>
           <ul className="space-y-3 text-sm text-slate-700">
-            <li className="cursor-pointer transition hover:text-rose-700">Help Center</li>
-            <li className="cursor-pointer transition hover:text-rose-700">Shipping Information</li>
-            <li className="cursor-pointer transition hover:text-rose-700">Returns and Exchanges</li>
-            <li className="cursor-pointer transition hover:text-rose-700">Privacy and Security</li>
+            <li className="transition hover:text-rose-700">Help Center (Demo)</li>
+            <li className="transition hover:text-rose-700">Shipping Information (Demo)</li>
+            <li className="transition hover:text-rose-700">Returns and Exchanges (Demo)</li>
+            <li className="transition hover:text-rose-700">Privacy and Security (Demo)</li>
           </ul>
         </div>
 

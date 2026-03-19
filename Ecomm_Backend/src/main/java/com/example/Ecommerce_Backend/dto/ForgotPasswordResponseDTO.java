@@ -6,12 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class CategoryResponseDTO {
-
-    private Long id;
-    private String name;
-    private Long productCount;
+public class ForgotPasswordResponseDTO {
+    private String message;
+    private String resetToken;
 }

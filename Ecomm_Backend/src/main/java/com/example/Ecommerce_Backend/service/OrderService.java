@@ -151,8 +151,7 @@ public class OrderService {
                 amounts.shipping(),
                 amounts.platformFee(),
                 amounts.tax(),
-                amounts.payable()
-        );
+                amounts.payable());
     }
 
     @Transactional
@@ -161,8 +160,7 @@ public class OrderService {
             Long addressId,
             String razorpayOrderId,
             String razorpayPaymentId,
-            BigDecimal paidAmount
-    ) {
+            BigDecimal paidAmount) {
         if (razorpayOrderId == null || razorpayOrderId.isBlank()) {
             throw new BadRequestException("Missing Razorpay order id");
         }
@@ -262,14 +260,126 @@ public class OrderService {
         return mapOrderToResponse(order);
     }
 
+    @Transactional
+    public ReorderResult reorderPastOrder(Long orderId) {
+        UserEntity user = getCurrentUser();
+
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You are not authorized to reorder this order");
+        }
+
+        if (order.getStatus() != OrderStatus.DELIVERED && order.getStatus() != OrderStatus.CANCELED) {
+            throw new BadRequestException("Reorder is available only for past delivered or canceled orders");
+        }
+
+        List<OrderItemEntity> orderItems = orderItemRepository.findByOrder(order);
+        if (orderItems.isEmpty()) {
+            throw new BadRequestException("This order has no items to reorder");
+        }
+
+        CartEntity cart = cartRepository.findByUser(user)
+                .orElseGet(() -> cartRepository.save(CartEntity.builder().user(user).build()));
+
+        int addedItems = 0;
+        int skippedItems = 0;
+
+        for (OrderItemEntity orderItem : orderItems) {
+            ProductEntity product = productRepository.findById(orderItem.getProductId()).orElse(null);
+            if (product == null) {
+                skippedItems++;
+                continue;
+            }
+
+            int availableStock = product.getStockQuantity() == null ? 0 : product.getStockQuantity();
+            if (availableStock <= 0) {
+                skippedItems++;
+                continue;
+            }
+
+            CartItemEntity existing = cartItemRepository.findByCartAndProduct(cart, product).orElse(null);
+            int currentCartQty = existing == null ? 0 : (existing.getQuantity() == null ? 0 : existing.getQuantity());
+            int canStillAdd = availableStock - currentCartQty;
+            if (canStillAdd <= 0) {
+                skippedItems++;
+                continue;
+            }
+
+            int desiredQty = orderItem.getQuantity() == null ? 0 : orderItem.getQuantity();
+            int qtyToAdd = Math.min(Math.max(desiredQty, 0), canStillAdd);
+            if (qtyToAdd <= 0) {
+                skippedItems++;
+                continue;
+            }
+
+            if (existing == null) {
+                CartItemEntity cartItem = new CartItemEntity();
+                cartItem.setCart(cart);
+                cartItem.setProduct(product);
+                cartItem.setQuantity(qtyToAdd);
+                cartItemRepository.save(cartItem);
+            } else {
+                existing.setQuantity(currentCartQty + qtyToAdd);
+                cartItemRepository.save(existing);
+            }
+
+            addedItems++;
+        }
+
+        if (addedItems == 0) {
+            throw new BadRequestException("No items from this order are currently available to reorder");
+        }
+
+        return new ReorderResult(addedItems, skippedItems);
+    }
+
+    @Transactional
+    public OrderResponseDTO cancelMyOrder(Long orderId) {
+        UserEntity user = getCurrentUser();
+
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You are not authorized to cancel this order");
+        }
+
+        if (order.getStatus() == OrderStatus.CANCELED) {
+            return mapOrderToResponse(order);
+        }
+
+        if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.DELIVERED) {
+            throw new BadRequestException("Order cannot be canceled after it is shipped");
+        }
+
+        if (order.getStatus() != OrderStatus.PENDING && order.getStatus() != OrderStatus.CONFIRMED) {
+            throw new BadRequestException("Only pending or confirmed orders can be canceled");
+        }
+
+        List<OrderItemEntity> orderItems = orderItemRepository.findByOrder(order);
+        for (OrderItemEntity item : orderItems) {
+            productRepository.findById(item.getProductId()).ifPresent(product -> {
+                int currentStock = product.getStockQuantity() == null ? 0 : product.getStockQuantity();
+                int restoreQty = item.getQuantity() == null ? 0 : item.getQuantity();
+                product.setStockQuantity(currentStock + restoreQty);
+                productRepository.save(product);
+            });
+        }
+
+        order.setStatus(OrderStatus.CANCELED);
+        OrderEntity saved = orderRepository.save(order);
+        return mapOrderToResponse(saved);
+    }
+
     public Page<OrderResponseDTO> getAllOrdersForAdmin(
             int page,
             int size,
             String sortBy,
             String direction,
             String status,
-            String keyword
-    ) {
+            String keyword) {
         Sort sort = "desc".equalsIgnoreCase(direction)
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
@@ -289,7 +399,8 @@ public class OrderService {
 
         Page<OrderEntity> orderPage;
         if (orderStatus != null && hasKeyword) {
-            orderPage = orderRepository.findByStatusAndUserEmailContainingIgnoreCase(orderStatus, normalizedKeyword, pageable);
+            orderPage = orderRepository.findByStatusAndUserEmailContainingIgnoreCase(orderStatus, normalizedKeyword,
+                    pageable);
         } else if (orderStatus != null) {
             orderPage = orderRepository.findByStatus(orderStatus, pageable);
         } else if (hasKeyword) {
@@ -382,6 +493,16 @@ public class OrderService {
             itemDTOs.add(itemDTO);
         }
 
+        String paymentMethod;
+        String paymentState;
+        if (order.getPaymentProvider() == PaymentProvider.RAZORPAY) {
+            paymentMethod = "Online (Razorpay)";
+            paymentState = order.getPaymentStatus() == PaymentStatus.PAID ? "Paid" : "Pending";
+        } else {
+            paymentMethod = "Cash on Delivery";
+            paymentState = order.getStatus() == OrderStatus.CANCELED ? "Not Charged" : "Pay on Delivery";
+        }
+
         return OrderResponseDTO.builder()
                 .orderId(order.getId())
                 .totalAmount(order.getTotalAmount())
@@ -390,6 +511,8 @@ public class OrderService {
                 .platformFeeAmount(order.getPlatformFeeAmount())
                 .taxAmount(order.getTaxAmount())
                 .status(order.getStatus())
+                .paymentMethod(paymentMethod)
+                .paymentState(paymentState)
                 .createdAt(order.getCreatedAt())
                 .userName(order.getUser() == null ? null : order.getUser().getName())
                 .userEmail(order.getUser() == null ? null : order.getUser().getEmail())
@@ -465,8 +588,7 @@ public class OrderService {
             BigDecimal shipping,
             BigDecimal platformFee,
             BigDecimal tax,
-            BigDecimal payableAmount
-    ) {
+            BigDecimal payableAmount) {
     }
 
     private record CheckoutAmounts(
@@ -474,8 +596,10 @@ public class OrderService {
             BigDecimal shipping,
             BigDecimal platformFee,
             BigDecimal tax,
-            BigDecimal payable
-    ) {
+            BigDecimal payable) {
+    }
+
+    public record ReorderResult(int addedItems, int skippedItems) {
     }
 
 }

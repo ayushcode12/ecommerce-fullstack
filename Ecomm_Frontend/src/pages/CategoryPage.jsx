@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import api from "../api/axiosInstance"
 import ProductCard from "../components/ProductCard"
 
-const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
+const CategoryPage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishlistIds }) => {
   const { id } = useParams()
   const categoryId = Number(id)
 
@@ -70,14 +70,16 @@ const CategoryPage = ({ refreshCartCount, cartQuantities }) => {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
             {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                refreshCartCount={refreshCartCount}
-                cartQuantity={cartQuantities?.[product.id] || 0}
-              />
-            ))}
-          </div>
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  refreshCartCount={refreshCartCount}
+                  cartQuantity={cartQuantities?.[product.id] || 0}
+                  wishlistIds={wishlistIds}
+                  refreshWishlistIds={refreshWishlistIds}
+                />
+              ))}
+            </div>
         )}
       </div>
     </div>

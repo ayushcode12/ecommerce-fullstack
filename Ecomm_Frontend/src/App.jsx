@@ -1,6 +1,9 @@
 import Navbar from './components/Navbar'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import Profile from './pages/Profile'
 import Products from './pages/Products'
 import HomePage from './pages/HomePage'
 import Cart from './pages/Cart'
@@ -9,8 +12,10 @@ import OrderDetails from './pages/OrderDetails'
 import ProductDetails from './pages/ProductDetails'
 import CategoryPage from './pages/CategoryPage'
 import AddAddress from './pages/AddAddress'
+import Wishlist from './pages/Wishlist'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
+import AdminCategories from './pages/admin/AdminCategories'
 import AdminOrders from './pages/admin/AdminOrders'
 import ProtectedRoute from './auth/ProtectedRoute'
 import { Routes, Route, useLocation } from 'react-router-dom'
@@ -23,11 +28,12 @@ function App() {
 
   const location = useLocation()
 
-  const hideNavbarRoutes = ["/login", "/register"]
+  const hideNavbarRoutes = ["/login", "/register", "/forgot-password", "/reset-password"]
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname)
 
   const [cartCount, setCartCount] = useState(0)
   const [cartQuantities, setCartQuantities] = useState({})
+  const [wishlistIds, setWishlistIds] = useState(new Set())
 
   const refreshCartCount = async () => {
     if (localStorage.getItem("role") !== "USER") {
@@ -59,14 +65,32 @@ function App() {
     }
   }
 
+  const refreshWishlistIds = async () => {
+    if (localStorage.getItem("role") !== "USER") {
+      setWishlistIds(new Set())
+      return
+    }
+
+    try {
+      const response = await api.get("/wishlist/ids")
+      const ids = Array.isArray(response.data) ? response.data : []
+      setWishlistIds(new Set(ids))
+    } catch (error) {
+      console.log("Failed to refresh wishlist ids", error)
+      setWishlistIds(new Set())
+    }
+  }
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshCartCount()
+    refreshWishlistIds()
   }, [])
 
   useEffect(() => {
     const handleAuthChanged = () => {
       refreshCartCount()
+      refreshWishlistIds()
     }
 
     window.addEventListener("auth-changed", handleAuthChanged)
@@ -75,13 +99,15 @@ function App() {
 
   return (
     <div>
-      {!shouldHideNavbar && <Navbar cartCount={cartCount} />}
+      {!shouldHideNavbar && <Navbar cartCount={cartCount} wishlistCount={wishlistIds.size} />}
       <Toaster position="top-right" />
 
       <Routes>
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route
           path="/"
@@ -89,6 +115,8 @@ function App() {
             <HomePage
               refreshCartCount={refreshCartCount}
               cartQuantities={cartQuantities}
+              wishlistIds={wishlistIds}
+              refreshWishlistIds={refreshWishlistIds}
             />
           }
         />
@@ -98,6 +126,8 @@ function App() {
             <CategoryPage
               refreshCartCount={refreshCartCount}
               cartQuantities={cartQuantities}
+              wishlistIds={wishlistIds}
+              refreshWishlistIds={refreshWishlistIds}
             />
           }
         />
@@ -108,11 +138,37 @@ function App() {
             <Products
               refreshCartCount={refreshCartCount}
               cartQuantities={cartQuantities}
+              wishlistIds={wishlistIds}
+              refreshWishlistIds={refreshWishlistIds}
             />
           }
         />
 
-        <Route path="/product/:id" element={<ProductDetails refreshCartCount={refreshCartCount} />} />
+        <Route
+          path="/product/:id"
+          element={
+            <ProductDetails
+              refreshCartCount={refreshCartCount}
+              wishlistIds={wishlistIds}
+              refreshWishlistIds={refreshWishlistIds}
+            />
+          }
+        />
+
+        <Route path="/wishlist" element={
+          <ProtectedRoute>
+            <Wishlist
+              refreshCartCount={refreshCartCount}
+              refreshWishlistIds={refreshWishlistIds}
+            />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
 
         <Route path="/cart" element={
           <ProtectedRoute>
@@ -122,13 +178,13 @@ function App() {
 
         <Route path="/orders" element={
           <ProtectedRoute>
-            <Orders />
+            <Orders refreshCartCount={refreshCartCount} />
           </ProtectedRoute>
         } />
 
         <Route path="/orders/:orderId" element={
           <ProtectedRoute>
-            <OrderDetails />
+            <OrderDetails refreshCartCount={refreshCartCount} />
           </ProtectedRoute>
         } />
 
@@ -153,6 +209,12 @@ function App() {
         <Route path="/admin/products" element={
           <ProtectedRoute requiredRole="ADMIN">
             <AdminProducts />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/categories" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminCategories />
           </ProtectedRoute>
         } />
 

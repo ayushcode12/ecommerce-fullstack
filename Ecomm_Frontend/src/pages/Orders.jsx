@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { CalendarClock, ChevronRight, PackageCheck, Truck } from "lucide-react"
+import { Banknote, CalendarClock, ChevronRight, CreditCard, PackageCheck, Truck } from "lucide-react"
+import toast from "react-hot-toast"
 import api from "../api/axiosInstance"
 import getApiErrorMessage from "../utils/getApiErrorMessage"
 import {
@@ -47,10 +48,29 @@ const getStepClasses = (state) => {
   }
 }
 
-const Orders = () => {
+const getPaymentBadge = (paymentMethod, paymentState) => {
+  if (paymentMethod === "Cash on Delivery") {
+    return {
+      label: "Cash on Delivery",
+      icon: Banknote,
+      className: "bg-amber-50 text-amber-700 border-amber-200"
+    }
+  }
+  if (paymentMethod === "Online (Razorpay)") {
+    return {
+      label: `Online · ${paymentState || "Paid"}`,
+      icon: CreditCard,
+      className: "bg-emerald-50 text-emerald-700 border-emerald-200"
+    }
+  }
+  return null
+}
+
+const Orders = ({ refreshCartCount }) => {
   const [orders, setOrders] = useState([])
   const [loadingOrders, setLoadingOrders] = useState(true)
   const [errorMessage, setErrorMessage] = useState("")
+  const [reorderingOrderId, setReorderingOrderId] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -82,6 +102,25 @@ const Orders = () => {
       ),
     [orders]
   )
+
+  const canReorder = (status) => ["DELIVERED", "CANCELED"].includes(String(status || "").toUpperCase())
+
+  const handleReorder = async (event, orderId) => {
+    event.stopPropagation()
+
+    try {
+      setReorderingOrderId(orderId)
+      const response = await api.post(`/orders/${orderId}/reorder`)
+      if (refreshCartCount) {
+        await refreshCartCount()
+      }
+      toast.success(response.data || "Items added to cart")
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Reorder failed"))
+    } finally {
+      setReorderingOrderId(null)
+    }
+  }
 
   return (
     <div className="page-wrap animate-fadeIn">
@@ -125,11 +164,19 @@ const Orders = () => {
               const estimatedDelivery = getEstimatedDeliveryDate(order.createdAt, order.status)
 
               return (
-                <button
+                <div
                   key={order.orderId}
                   onClick={() => navigate(`/orders/${order.orderId}`)}
-                className="surface-card w-full rounded-2xl p-4 text-left transition hover:-translate-y-0.5 hover:shadow-xl sm:p-5"
-              >
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault()
+                      navigate(`/orders/${order.orderId}`)
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  className="surface-card w-full rounded-2xl p-4 text-left transition hover:-translate-y-0.5 hover:shadow-xl sm:p-5"
+                >
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <h2 className="font-display text-xl font-bold text-slate-900">Order #{order.orderId}</h2>
@@ -139,13 +186,26 @@ const Orders = () => {
                       </p>
                     </div>
 
-                    <div className="text-left sm:text-right">
-                      <span
-                        className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${statusMeta.badgeClass}`}
-                      >
-                        {statusMeta.label}
-                      </span>
-                      <p className="mt-2 font-display text-2xl font-bold text-rose-700">
+                    <div className="flex flex-col items-start gap-1.5 sm:items-end">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span
+                          className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${statusMeta.badgeClass}`}
+                        >
+                          {statusMeta.label}
+                        </span>
+                        {(() => {
+                          const pb = getPaymentBadge(order.paymentMethod, order.paymentState)
+                          if (!pb) return null
+                          const Icon = pb.icon
+                          return (
+                            <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold ${pb.className}`}>
+                              <Icon size={11} />
+                              {pb.label}
+                            </span>
+                          )
+                        })()}
+                      </div>
+                      <p className="font-display text-2xl font-bold text-rose-700">
                         {formatCurrency(order.totalAmount)}
                       </p>
                     </div>
@@ -175,26 +235,39 @@ const Orders = () => {
                   </div>
 
                   <div className="mt-4 flex flex-col items-start gap-2 border-t border-[var(--border)] pt-4 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
-                    <p className="inline-flex items-center gap-2 text-slate-600">
-                      <PackageCheck size={15} className="text-rose-700" />
-                      {itemCount} item{itemCount === 1 ? "" : "s"}
-                    </p>
-
-                    {estimatedDelivery ? (
+                    <div className="flex flex-wrap items-center gap-3">
                       <p className="inline-flex items-center gap-2 text-slate-600">
-                        <Truck size={15} className="text-rose-700" />
-                        ETA {estimatedDelivery}
+                        <PackageCheck size={15} className="text-rose-700" />
+                        {itemCount} item{itemCount === 1 ? "" : "s"}
                       </p>
-                    ) : (
-                      <p className="text-slate-500">Delivery timeline updated in order details</p>
-                    )}
 
-                    <span className="inline-flex items-center gap-1 font-semibold text-rose-700">
-                      View details
-                      <ChevronRight size={15} />
-                    </span>
+                      {estimatedDelivery ? (
+                        <p className="inline-flex items-center gap-2 text-slate-600">
+                          <Truck size={15} className="text-rose-700" />
+                          ETA {estimatedDelivery}
+                        </p>
+                      ) : (
+                        <p className="text-slate-500">Delivery timeline updated in order details</p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {canReorder(order.status) && (
+                        <button
+                          onClick={(event) => handleReorder(event, order.orderId)}
+                          disabled={reorderingOrderId === order.orderId}
+                          className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {reorderingOrderId === order.orderId ? "Reordering..." : "Reorder"}
+                        </button>
+                      )}
+                      <span className="inline-flex items-center gap-1 font-semibold text-rose-700">
+                        View details
+                        <ChevronRight size={15} />
+                      </span>
+                    </div>
                   </div>
-                </button>
+                </div>
               )
             })}
           </div>

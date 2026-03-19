@@ -6,15 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductResponseDTO {
-
-    private Long id;
+public class WishlistItemResponseDTO {
+    private Long productId;
     private String name;
     private String description;
     private BigDecimal price;
@@ -24,6 +24,5 @@ public class ProductResponseDTO {
     private Integer stockQuantity;
     private Double averageRating;
     private Long reviewCount;
-    private Boolean inWishlist;
-
+    private LocalDateTime addedAt;
 }

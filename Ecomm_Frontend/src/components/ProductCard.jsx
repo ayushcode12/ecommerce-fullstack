@@ -2,13 +2,28 @@ import api from '../api/axiosInstance'
 import toast from 'react-hot-toast'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Minus, Plus, ShoppingBag } from "lucide-react"
+import { ArrowRight, Heart, Minus, Plus, ShoppingBag, Star } from "lucide-react"
 import getApiErrorMessage from "../utils/getApiErrorMessage"
 
-const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
+const ProductCard = ({
+  product,
+  refreshCartCount,
+  cartQuantity = 0,
+  wishlistIds = new Set(),
+  refreshWishlistIds
+}) => {
   const [updatingQuantity, setUpdatingQuantity] = useState(false)
+  const [updatingWishlist, setUpdatingWishlist] = useState(false)
   const [quantity, setQuantity] = useState(0)
   const navigate = useNavigate()
+  const role = localStorage.getItem("role")
+  const token = localStorage.getItem("token")
+  const isUser = role === "USER"
+  const isWishlisted = wishlistIds instanceof Set
+    ? wishlistIds.has(product.id)
+    : Array.isArray(wishlistIds) && wishlistIds.includes(product.id)
+  const averageRating = Number(product.averageRating || 0)
+  const reviewCount = Number(product.reviewCount || 0)
   const productImage =
     product.imageUrl ||
     (Array.isArray(product.imageUrls) && product.imageUrls.length > 0
@@ -59,12 +74,56 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
     }
   }
 
+  const handleWishlistToggle = async (event) => {
+    event.stopPropagation()
+
+    if (!token || !isUser) {
+      toast.error("Please login as user to use wishlist.")
+      navigate("/login")
+      return
+    }
+
+    try {
+      setUpdatingWishlist(true)
+      if (isWishlisted) {
+        await api.delete(`/wishlist/${product.id}`)
+        toast.success("Removed from wishlist")
+      } else {
+        await api.post(`/wishlist/${product.id}`)
+        toast.success("Added to wishlist")
+      }
+      if (refreshWishlistIds) {
+        await refreshWishlistIds()
+      }
+    } catch (error) {
+      console.log("Failed to toggle wishlist:", error.response?.data || error.message)
+      toast.error(getApiErrorMessage(error, "Failed to update wishlist."))
+    } finally {
+      setUpdatingWishlist(false)
+    }
+  }
+
   return (
     <div
       onClick={() => navigate(`/product/${product.id}`)}
       className="group surface-card cursor-pointer overflow-hidden rounded-3xl border border-[var(--border)] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-slate-100">
+        {isUser && (
+          <button
+            onClick={handleWishlistToggle}
+            disabled={updatingWishlist}
+            className={`absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border transition ${
+              isWishlisted
+                ? "border-rose-200 bg-rose-50 text-rose-600"
+                : "border-white/70 bg-white/85 text-slate-600 hover:text-rose-600"
+            } disabled:cursor-not-allowed disabled:opacity-70`}
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart size={16} className={isWishlisted ? "fill-current" : ""} />
+          </button>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/45 via-slate-900/10 to-transparent opacity-0 transition group-hover:opacity-100" />
         <img
           src={productImage}
@@ -95,6 +154,11 @@ const ProductCard = ({ product, refreshCartCount, cartQuantity = 0 }) => {
         <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
           In stock: {product.stockQuantity}
         </p>
+
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+          <Star size={12} className={reviewCount > 0 ? "fill-current" : ""} />
+          {averageRating.toFixed(1)} ({reviewCount})
+        </div>
 
         <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
           {product.description}

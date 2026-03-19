@@ -13,7 +13,9 @@ const authApi = axios.create({
 const isAuthEndpoint = (url = "") =>
   url.includes("/auth/login") ||
   url.includes("/auth/register") ||
-  url.includes("/auth/refresh")
+  url.includes("/auth/refresh") ||
+  url.includes("/auth/forgot-password") ||
+  url.includes("/auth/reset-password")
 
 const clearSessionAndRedirect = () => {
   localStorage.removeItem("token")

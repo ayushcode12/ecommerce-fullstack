@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { CheckCircle2, Mail, Phone, RefreshCw, Search, User } from "lucide-react"
+import { Banknote, CheckCircle2, CreditCard, Mail, Phone, RefreshCw, Search, User } from "lucide-react"
 import toast from "react-hot-toast"
 import api from "../../api/axiosInstance"
 import AdminShell from "../../components/admin/AdminShell"
@@ -181,13 +181,26 @@ const AdminOrders = () => {
                     <h3 className="font-display text-xl font-bold text-slate-900">Order #{order.orderId}</h3>
                     <p className="mt-1 text-xs text-slate-500">Placed {formatOrderDate(order.createdAt)}</p>
                   </div>
-                  <div className="text-right">
-                    <span
-                      className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusMeta.badgeClass}`}
-                    >
-                      {statusMeta.label}
-                    </span>
-                    <p className="mt-2 font-semibold text-rose-700">{formatCurrency(order.totalAmount)}</p>
+                  <div className="flex flex-col items-end gap-1.5 text-right">
+                    <div className="flex flex-wrap items-center justify-end gap-1.5">
+                      <span
+                        className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${statusMeta.badgeClass}`}
+                      >
+                        {statusMeta.label}
+                      </span>
+                      {order.paymentMethod === "Cash on Delivery" ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-700">
+                          <Banknote size={10} />
+                          COD
+                        </span>
+                      ) : order.paymentMethod === "Online (Razorpay)" ? (
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700">
+                          <CreditCard size={10} />
+                          Paid Online
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-1 font-semibold text-rose-700">{formatCurrency(order.totalAmount)}</p>
                   </div>
                 </div>
 

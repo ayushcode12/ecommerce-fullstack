@@ -400,11 +400,23 @@ const Cart = ({ refreshCartCount }) => {
                   className="surface-card rounded-2xl p-5"
                 >
                   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
+                    <div className="flex items-start gap-3">
+                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[var(--border)] bg-slate-100">
+                        <img
+                          src={item.productImageUrl || "/fallback.svg"}
+                          alt={item.productName}
+                          onError={(event) => {
+                            event.target.src = "/fallback.svg"
+                          }}
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                      <div>
                       <h2 className="font-display text-xl font-bold text-slate-900">
                         {item.productName}
                       </h2>
                       <p className="mt-1 text-sm text-slate-600">Rs {item.price} per unit</p>
+                      </div>
                     </div>
 
                     <div className="w-fit rounded-xl border border-[var(--border)] bg-white px-2 py-1">

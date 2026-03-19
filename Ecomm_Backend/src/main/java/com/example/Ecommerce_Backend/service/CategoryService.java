@@ -24,6 +24,7 @@ public class CategoryService {
                 .map(category -> CategoryResponseDTO.builder()
                         .id(category.getId())
                         .name(category.getName())
+                        .productCount(productRepository.countByCategoryId(category.getId()))
                         .build())
                 .toList();
     }
@@ -42,6 +43,27 @@ public class CategoryService {
         return CategoryResponseDTO.builder()
                 .id(saved.getId())
                 .name(saved.getName())
+                .productCount(0L)
+                .build();
+    }
+
+    public CategoryResponseDTO updateCategory(Long categoryId, CategoryRequestDTO requestDTO) {
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        String normalizedName = requestDTO.getName().trim();
+        categoryRepository.findByName(normalizedName)
+                .filter(existing -> !existing.getId().equals(categoryId))
+                .ifPresent(existing -> {
+                    throw new BadRequestException("Category already exists");
+                });
+
+        category.setName(normalizedName);
+        CategoryEntity saved = categoryRepository.save(category);
+        return CategoryResponseDTO.builder()
+                .id(saved.getId())
+                .name(saved.getName())
+                .productCount(productRepository.countByCategoryId(saved.getId()))
                 .build();
     }
 

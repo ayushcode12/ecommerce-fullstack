@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> {
 
     Optional<UserEntity> findByRefreshTokenHash(String refreshTokenHash);
 
+    Optional<UserEntity> findByResetPasswordTokenHash(String resetPasswordTokenHash);
+
 }

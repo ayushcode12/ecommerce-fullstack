@@ -1,9 +1,10 @@
 import { Link, NavLink } from "react-router-dom"
-import { BarChart3, Boxes, ClipboardList, LayoutDashboard } from "lucide-react"
+import { BarChart3, Boxes, ClipboardList, LayoutDashboard, Layers3 } from "lucide-react"
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/admin/products", label: "Products", icon: Boxes },
+  { to: "/admin/categories", label: "Categories", icon: Layers3 },
   { to: "/admin/orders", label: "Orders", icon: ClipboardList }
 ]
 

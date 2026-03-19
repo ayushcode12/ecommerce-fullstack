@@ -39,7 +39,13 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/register", "/auth/login", "/auth/refresh").permitAll()
+                    .requestMatchers(
+                            "/auth/register",
+                            "/auth/login",
+                            "/auth/refresh",
+                            "/auth/forgot-password",
+                            "/auth/reset-password"
+                    ).permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/products/**").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/categories/**").permitAll()
                     .anyRequest().authenticated())

@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import api from "../../api/axiosInstance"
 import AdminShell from "../../components/admin/AdminShell"
+import { OrderStatusDonutChart, RecentOrdersTrendChart } from "../../components/admin/AdminCharts"
 import getApiErrorMessage from "../../utils/getApiErrorMessage"
 import { formatCurrency, formatOrderDate, getStatusMeta } from "../../utils/orderTracking"
 
@@ -49,6 +50,16 @@ const AdminDashboard = () => {
         { label: "Products", value: dashboard.totalProducts, icon: Boxes },
         { label: "Orders", value: dashboard.totalOrders, icon: ShoppingCart },
         { label: "Revenue", value: formatCurrency(dashboard.totalRevenue), icon: CircleDollarSign }
+      ]
+    : []
+
+  const statusChartData = dashboard
+    ? [
+        { key: "PENDING", label: "Pending", value: Number(dashboard.pendingOrders || 0), color: "#f59e0b" },
+        { key: "CONFIRMED", label: "Confirmed", value: Number(dashboard.confirmedOrders || 0), color: "#0ea5e9" },
+        { key: "SHIPPED", label: "Shipped", value: Number(dashboard.shippedOrders || 0), color: "#6366f1" },
+        { key: "DELIVERED", label: "Delivered", value: Number(dashboard.deliveredOrders || 0), color: "#10b981" },
+        { key: "CANCELED", label: "Canceled", value: Number(dashboard.canceledOrders || 0), color: "#ef4444" }
       ]
     : []
 
@@ -120,6 +131,11 @@ const AdminDashboard = () => {
               </p>
               <p className="mt-2 font-display text-2xl font-bold text-slate-900">{dashboard.canceledOrders}</p>
             </div>
+          </section>
+
+          <section className="grid gap-4 xl:grid-cols-2">
+            <OrderStatusDonutChart data={statusChartData} />
+            <RecentOrdersTrendChart orders={dashboard.recentOrders || []} />
           </section>
 
           <section className="surface-card rounded-2xl p-4 sm:p-5 md:p-6">

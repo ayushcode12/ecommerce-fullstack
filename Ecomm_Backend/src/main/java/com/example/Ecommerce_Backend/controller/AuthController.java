@@ -1,9 +1,12 @@
 package com.example.Ecommerce_Backend.controller;
 
 import com.example.Ecommerce_Backend.dto.AuthResponseDTO;
+import com.example.Ecommerce_Backend.dto.ForgotPasswordRequestDTO;
+import com.example.Ecommerce_Backend.dto.ForgotPasswordResponseDTO;
 import com.example.Ecommerce_Backend.dto.LoginRequestDTO;
 import com.example.Ecommerce_Backend.dto.RefreshTokenRequestDTO;
 import com.example.Ecommerce_Backend.dto.RegisterRequestDTO;
+import com.example.Ecommerce_Backend.dto.ResetPasswordRequestDTO;
 import com.example.Ecommerce_Backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +42,19 @@ public class AuthController {
     public ResponseEntity<AuthResponseDTO> refresh(@Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
         AuthResponseDTO authResponseDTO = authService.refresh(refreshTokenRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(authResponseDTO);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ForgotPasswordResponseDTO> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequestDTO requestDTO
+    ) {
+        return ResponseEntity.ok(authService.requestPasswordReset(requestDTO));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO requestDTO) {
+        authService.resetPassword(requestDTO);
+        return ResponseEntity.ok("Password reset successful");
     }
 
     @PostMapping("/logout")

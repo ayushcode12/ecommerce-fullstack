@@ -99,6 +99,7 @@ public class CartService {
             CartItemResponseDTO dto = CartItemResponseDTO.builder()
                     .productId(item.getProduct().getId())
                     .productName(item.getProduct().getName())
+                    .productImageUrl(resolveCartImage(item.getProduct()))
                     .price(price)
                     .quantity(quantity)
                     .totalPrice(totalPrice)
@@ -141,5 +142,24 @@ public class CartService {
 
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
+    }
+
+    private String resolveCartImage(ProductEntity product) {
+        if (product == null) {
+            return null;
+        }
+
+        if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
+            String first = product.getImageUrls().get(0);
+            if (first != null && !first.isBlank()) {
+                return first.trim();
+            }
+        }
+
+        if (product.getImageUrl() != null && !product.getImageUrl().isBlank()) {
+            return product.getImageUrl().trim();
+        }
+
+        return null;
     }
 }
