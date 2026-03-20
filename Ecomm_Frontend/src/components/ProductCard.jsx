@@ -106,14 +106,14 @@ const ProductCard = ({
   return (
     <div
       onClick={() => navigate(`/product/${product.id}`)}
-      className="group surface-card cursor-pointer overflow-hidden rounded-3xl border border-[var(--border)] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+      className="group surface-card cursor-pointer overflow-hidden rounded-2xl border border-[var(--border)] transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl sm:rounded-3xl"
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-slate-100">
+      <div className="relative aspect-square overflow-hidden bg-slate-100 sm:aspect-[4/5]">
         {isUser && (
           <button
             onClick={handleWishlistToggle}
             disabled={updatingWishlist}
-            className={`absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border transition ${
+            className={`absolute right-2 top-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full border transition sm:right-3 sm:top-3 sm:h-9 sm:w-9 ${
               isWishlisted
                 ? "border-rose-200 bg-rose-50 text-rose-600"
                 : "border-white/70 bg-white/85 text-slate-600 hover:text-rose-600"
@@ -134,7 +134,7 @@ const ProductCard = ({
           }}
           className="h-full w-full object-contain transition duration-500"
         />
-        <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-between opacity-0 transition group-hover:opacity-100">
+        <div className="pointer-events-none absolute inset-x-3 bottom-3 hidden items-center justify-between opacity-0 transition group-hover:opacity-100 sm:flex">
           <span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-slate-700">
             View details
           </span>
@@ -142,49 +142,49 @@ const ProductCard = ({
         </div>
       </div>
 
-      <div className="space-y-3 p-4 sm:space-y-4 sm:p-6">
-        <span className="inline-flex rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
+      <div className="space-y-2.5 p-3 sm:space-y-4 sm:p-6">
+        <span className="inline-flex rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-700 sm:px-3 sm:text-xs">
           {product.categoryName}
         </span>
 
-        <h3 className="font-display text-lg font-bold leading-snug text-slate-900 sm:text-xl">
+        <h3 className="font-display text-base font-bold leading-tight text-slate-900 sm:text-xl sm:leading-snug">
           {product.name}
         </h3>
 
-        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
+        <p className="hidden text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500 sm:block sm:text-xs sm:tracking-[0.1em]">
           In stock: {product.stockQuantity}
         </p>
 
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+        <div className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-xs">
           <Star size={12} className={reviewCount > 0 ? "fill-current" : ""} />
           {averageRating.toFixed(1)} ({reviewCount})
         </div>
 
-        <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
+        <p className="line-clamp-1 text-xs leading-relaxed text-slate-600 sm:line-clamp-2 sm:text-sm">
           {product.description}
         </p>
 
-        <div className="mt-5 flex flex-col items-start gap-3 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-display text-xl font-bold text-rose-700 sm:text-2xl">Rs {product.price}</p>
+        <div className="mt-3 flex items-center justify-between gap-2.5 sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-display text-lg font-bold text-rose-700 sm:text-2xl">Rs {product.price}</p>
 
           {quantity > 0 ? (
-            <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-2 py-1">
+            <div className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-white px-1.5 py-0.5 sm:gap-2 sm:px-2 sm:py-1">
               <button
                 disabled={updatingQuantity}
                 onClick={(event) => handleQuantityUpdate(event, -1)}
-                className="rounded-lg p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg p-1 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 sm:p-1.5"
               >
                 <Minus size={14} />
               </button>
 
-              <span className="min-w-6 text-center text-sm font-semibold text-slate-800">
+              <span className="min-w-5 text-center text-xs font-semibold text-slate-800 sm:min-w-6 sm:text-sm">
                 {updatingQuantity ? "..." : quantity}
               </span>
 
               <button
                 disabled={updatingQuantity}
                 onClick={(event) => handleQuantityUpdate(event, 1)}
-                className="rounded-lg p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg p-1 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 sm:p-1.5"
               >
                 <Plus size={14} />
               </button>
@@ -193,12 +193,12 @@ const ProductCard = ({
             <button
               disabled={updatingQuantity}
               onClick={handleAddToCart}
-              className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 sm:w-auto ${
+              className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all duration-300 sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm ${
                 updatingQuantity ? "cursor-not-allowed bg-slate-400" : "bg-rose-600 hover:bg-rose-700"
               }`}
             >
               <ShoppingBag size={14} />
-              {updatingQuantity ? "Adding..." : "Add to Cart"}
+              {updatingQuantity ? "Adding..." : "Add"}
             </button>
           )}
         </div>

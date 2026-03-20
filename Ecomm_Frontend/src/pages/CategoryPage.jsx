@@ -53,7 +53,7 @@ const CategoryPage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWi
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, index) => (
               <div key={index} className="surface-card animate-pulse rounded-3xl p-4">
                 <div className="h-36 rounded-xl bg-slate-200" />
@@ -68,7 +68,7 @@ const CategoryPage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWi
             No products found in this category.
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4">
             {products.map((product) => (
                 <ProductCard
                   key={product.id}

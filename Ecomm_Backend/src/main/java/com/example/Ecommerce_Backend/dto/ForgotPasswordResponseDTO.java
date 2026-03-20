@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ForgotPasswordResponseDTO {
     private String message;
-    private String resetToken;
 }

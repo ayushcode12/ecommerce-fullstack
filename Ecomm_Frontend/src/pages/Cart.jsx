@@ -248,7 +248,7 @@ const Cart = ({ refreshCartCount }) => {
 
         {loadingCart ? (
           <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-            <div className="space-y-4">
+            <div className="order-2 space-y-4 lg:order-1">
               {Array.from({ length: 3 }).map((_, index) => (
                 <div key={index} className="surface-card animate-pulse rounded-2xl p-5">
                   <div className="h-5 w-40 rounded bg-slate-200" />
@@ -397,7 +397,7 @@ const Cart = ({ refreshCartCount }) => {
               {cartItems.map((item) => (
                 <div
                   key={item.productId}
-                  className="surface-card rounded-2xl p-5"
+                  className="surface-card rounded-2xl p-4 sm:p-5"
                 >
                   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-start gap-3">
@@ -412,7 +412,7 @@ const Cart = ({ refreshCartCount }) => {
                         />
                       </div>
                       <div>
-                      <h2 className="font-display text-xl font-bold text-slate-900">
+                      <h2 className="font-display text-lg font-bold text-slate-900 sm:text-xl">
                         {item.productName}
                       </h2>
                       <p className="mt-1 text-sm text-slate-600">Rs {item.price} per unit</p>
@@ -437,7 +437,7 @@ const Cart = ({ refreshCartCount }) => {
                       </div>
                     </div>
 
-                    <div className="font-display text-xl font-bold text-rose-700">
+                    <div className="font-display text-lg font-bold text-rose-700 sm:text-xl">
                       Rs {item.price * item.quantity}
                     </div>
                   </div>
@@ -445,8 +445,8 @@ const Cart = ({ refreshCartCount }) => {
               ))}
             </div>
 
-            <aside className="space-y-4">
-              <div className="surface-card rounded-3xl p-6">
+            <aside className="order-1 space-y-4 lg:order-2">
+              <div className="surface-card rounded-3xl p-5 sm:p-6">
                 <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                   <ReceiptText size={14} />
                   Order Summary
@@ -500,7 +500,7 @@ const Cart = ({ refreshCartCount }) => {
                 </p>
               </div>
 
-              <div className="surface-card rounded-3xl p-6">
+              <div className="surface-card rounded-3xl p-5 sm:p-6">
                 <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                   <CreditCard size={14} />
                   Payment Method
@@ -509,7 +509,7 @@ const Cart = ({ refreshCartCount }) => {
                 <div className="mt-4 space-y-2">
                   <button
                     onClick={() => setPaymentMethod(PAYMENT_METHODS.COD)}
-                    className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+                    className={`flex w-full items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
                       paymentMethod === PAYMENT_METHODS.COD
                         ? "border-rose-300 bg-rose-50 text-rose-700"
                         : "border-[var(--border)] bg-white text-slate-700 hover:border-rose-200 hover:text-rose-700"
@@ -520,7 +520,7 @@ const Cart = ({ refreshCartCount }) => {
                   </button>
                   <button
                     onClick={() => setPaymentMethod(PAYMENT_METHODS.ONLINE)}
-                    className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+                    className={`flex w-full items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${
                       paymentMethod === PAYMENT_METHODS.ONLINE
                         ? "border-rose-300 bg-rose-50 text-rose-700"
                         : "border-[var(--border)] bg-white text-slate-700 hover:border-rose-200 hover:text-rose-700"

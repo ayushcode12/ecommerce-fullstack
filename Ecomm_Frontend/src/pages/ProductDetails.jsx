@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { Heart, MapPin, ShoppingBag, Star, Trash2 } from "lucide-react"
+import { CheckCircle2, Heart, MapPin, RotateCcw, ShieldCheck, ShoppingBag, Star, Trash2, Truck } from "lucide-react"
 import api from "../api/axiosInstance"
 import toast from "react-hot-toast"
 import { useAddress } from "../context/AddressContext"
@@ -219,6 +219,12 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
 
   const averageRating = Number(reviewsData.averageRating || product.averageRating || 0)
   const reviewCount = Number(reviewsData.reviewCount || product.reviewCount || 0)
+  const productHighlights = [
+    "Comfort-first fit for all-day wear",
+    "Durable stitching and quality finish",
+    "Easy care fabric for daily use",
+    "Ideal for casual and street styling"
+  ]
 
   return (
     <div className="page-wrap animate-fadeIn">
@@ -226,9 +232,9 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
       <div className="page-accent page-accent--right" />
 
       <div className="mx-auto w-full max-w-[1200px] space-y-6 px-3 py-5 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
-        <div className="surface-card grid gap-6 rounded-3xl p-4 sm:gap-8 sm:p-6 md:grid-cols-2 md:p-8">
+        <div className="surface-card grid gap-5 rounded-3xl p-4 sm:gap-8 sm:p-6 md:grid-cols-2 md:p-8">
           <div>
-            <div className="relative flex min-h-[340px] items-center justify-center overflow-hidden rounded-3xl bg-slate-100 sm:min-h-[420px] lg:min-h-[520px]">
+            <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden rounded-3xl bg-slate-100 sm:min-h-[420px] lg:min-h-[520px]">
               <img
                 src={activeImage || productImages[0]}
                 alt={product.name}
@@ -266,12 +272,12 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
             )}
           </div>
 
-          <div className="space-y-4 sm:space-y-5">
+          <div className="space-y-4 sm:space-y-5 md:sticky md:top-24 md:self-start">
             <span className="inline-flex rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
               {product.categoryName}
             </span>
 
-            <h1 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl md:text-4xl">
+            <h1 className="font-display text-[clamp(1.65rem,6.2vw,2.3rem)] font-bold text-slate-900 sm:text-3xl md:text-4xl">
               {product.name}
             </h1>
 
@@ -300,7 +306,7 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
               <button
                 disabled={adding}
                 onClick={handleAddToCart}
-                className={`inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3 text-sm font-semibold text-white ${
+                className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-8 py-3 text-sm font-semibold text-white sm:w-auto ${
                   adding ? "cursor-not-allowed bg-slate-400" : "bg-rose-600 hover:bg-rose-700"
                 }`}
               >
@@ -312,7 +318,7 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
                 <button
                   disabled={togglingWishlist}
                   onClick={handleWishlistToggle}
-                  className={`inline-flex items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-semibold transition ${
+                  className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-semibold transition sm:w-auto ${
                     isWishlisted
                       ? "border-rose-300 bg-rose-50 text-rose-700"
                       : "border-[var(--border)] bg-white text-slate-700 hover:border-rose-200 hover:text-rose-700"
@@ -322,6 +328,47 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
                   {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
                 </button>
               )}
+            </div>
+
+            <div className="rounded-2xl border border-[var(--border)] bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                Product Highlights
+              </p>
+              <ul className="mt-3 grid grid-cols-1 gap-y-2 gap-x-8 sm:grid-cols-2 sm:gap-x-10">
+                {productHighlights.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-slate-700">
+                    <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-600" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+              <div className="rounded-2xl border border-[var(--border)] bg-white p-3">
+                <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  <Truck size={13} className="text-rose-700" />
+                  Delivery
+                </p>
+                <p className="mt-2 text-sm font-semibold text-slate-800">Estimated: 3-5 business days</p>
+                <p className="mt-0.5 text-xs text-slate-600">Free shipping above Rs 499</p>
+              </div>
+
+              <div className="rounded-2xl border border-[var(--border)] bg-white p-3">
+                <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  <RotateCcw size={13} className="text-rose-700" />
+                  Return Policy
+                </p>
+                <p className="mt-2 text-sm font-semibold text-slate-800">7-day easy return</p>
+                <p className="mt-0.5 text-xs text-slate-600">Quick replacement support</p>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3">
+              <p className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                <ShieldCheck size={14} />
+                Secure checkout and safe payment protection
+              </p>
             </div>
           </div>
         </div>

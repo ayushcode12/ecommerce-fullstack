@@ -189,6 +189,14 @@ body::before {
   box-shadow: 0 0 0 4px var(--ring);
 }
 
+.field-input-icon {
+  padding-left: 2.9rem !important;
+}
+
+.field-input-icon-lg {
+  padding-left: 3.25rem !important;
+}
+
 .field-error {
   color: #ef4444;
   font-size: 0.78rem;
@@ -217,6 +225,36 @@ select,
 textarea {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;
   transition-duration: 180ms;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .page-wrap {
+    min-height: calc(100vh - 110px);
+  }
+
+  .surface-card {
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(6px);
+  }
+
+  .surface-card:hover {
+    border-color: var(--border);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    transform: none;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.72rem 1rem;
+  }
 }
 
 /* Global color remap for previously hardcoded rose/amber utility classes */

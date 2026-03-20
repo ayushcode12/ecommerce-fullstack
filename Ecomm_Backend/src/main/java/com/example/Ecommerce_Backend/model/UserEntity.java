@@ -39,6 +39,10 @@ public class UserEntity {
 
     private LocalDateTime resetPasswordTokenExpiresAt;
 
+    private LocalDateTime resetPasswordOtpRequestedAt;
+
+    private Integer resetPasswordOtpAttempts;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

@@ -100,14 +100,14 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
   }
 
   const iconButtonClass =
-    "relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/90 bg-white text-slate-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md md:h-11 md:w-11"
+    "relative inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/90 bg-white text-slate-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md sm:h-10 sm:w-10 md:h-11 md:w-11"
 
   const menuItemClass =
-    "flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-teal-700"
+    "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-teal-700"
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 shadow-[0_8px_24px_rgba(15,23,42,0.07)] backdrop-blur-xl">
-      <div className="mx-auto w-full max-w-[1600px] px-3 py-3 sm:px-6 md:py-3.5 lg:px-8">
+    <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 shadow-[0_6px_18px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+      <div className="mx-auto w-full max-w-[1600px] px-3 py-2.5 sm:px-6 sm:py-3 md:py-3.5 lg:px-8">
         <div className="flex w-full flex-col gap-2.5 md:flex-row md:items-center md:justify-between">
           <Link
             to="/"
@@ -119,9 +119,12 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
             </span>
           </Link>
 
-          <div className="flex w-full flex-wrap items-center justify-end gap-3 md:w-auto md:flex-nowrap md:gap-3.5">
+          <div className="flex w-full min-w-0 items-center justify-between gap-2 md:w-auto md:min-w-fit md:justify-end md:gap-3.5">
             {isLoggedIn && isUser && (
-              <div className="relative order-1 w-full md:w-[236px] lg:w-[248px]" ref={addressMenuRef}>
+              <div
+                className="relative min-w-0 max-w-[185px] flex-1 md:w-[236px] md:max-w-none md:flex-none lg:w-[248px]"
+                ref={addressMenuRef}
+              >
                 <button
                   onClick={() => {
                     const shouldOpen = !isAddressOpen
@@ -130,7 +133,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                       loadAddresses()
                     }
                   }}
-                  className="flex h-11 w-full items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/85 px-3 text-left text-slate-800 shadow-sm transition-all duration-200 hover:border-teal-200 hover:bg-white hover:shadow-md"
+                  className="flex h-10 w-full items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-50/85 px-3 text-left text-slate-800 shadow-sm transition-all duration-200 hover:border-teal-200 hover:bg-white hover:shadow-md sm:h-11"
                 >
                   <MapPin size={16} className="text-teal-700" />
                   <div className="min-w-0">
@@ -145,7 +148,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                 </button>
 
                 {isAddressOpen && (
-                  <div className="absolute left-0 z-50 mt-2 w-[min(92vw,360px)] rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl md:left-auto md:right-0">
+                  <div className="absolute left-0 z-50 mt-2 w-[min(95vw,360px)] rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl md:left-auto md:right-0">
                     <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Saved addresses
                     </p>
@@ -229,132 +232,134 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
               </div>
             )}
 
-            <Link to="/" className={`${iconButtonClass} order-2 md:ml-0.5`} aria-label="Home" title="Home">
-              <Home size={20} />
-            </Link>
-
-            {isUser && (
-              <Link to="/cart" className={`${iconButtonClass} order-3`} aria-label="Cart" title="Cart">
-                <ShoppingCart size={20} />
-                {cartCount > 0 && (
-                  <span className="absolute -right-1 -top-1 rounded-full bg-rose-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                    {cartCount}
-                  </span>
-                )}
+            <div className="flex shrink-0 items-center gap-2">
+              <Link to="/" className={iconButtonClass} aria-label="Home" title="Home">
+                <Home size={20} />
               </Link>
-            )}
 
-            <div className="relative order-4" ref={profileMenuRef}>
-              <button
-                onClick={() => setIsProfileOpen((prev) => !prev)}
-                className={iconButtonClass}
-                aria-label="Profile menu"
-                title="Profile"
-              >
-                <UserCircle2 size={20} />
-              </button>
+              {isUser && (
+                <Link to="/cart" className={iconButtonClass} aria-label="Cart" title="Cart">
+                  <ShoppingCart size={20} />
+                  {cartCount > 0 && (
+                    <span className="absolute -right-1 -top-1 rounded-full bg-rose-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+              )}
 
-              {isProfileOpen && (
-                <div className="absolute right-0 z-50 mt-2 w-60 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
-                  <div className="mb-1 rounded-xl bg-slate-50 px-3 py-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">Account</p>
-                    <p className="text-sm font-semibold text-slate-800">{isAdmin ? "Administrator" : "User Menu"}</p>
-                  </div>
+              <div className="relative" ref={profileMenuRef}>
+                <button
+                  onClick={() => setIsProfileOpen((prev) => !prev)}
+                  className={iconButtonClass}
+                  aria-label="Profile menu"
+                  title="Profile"
+                >
+                  <UserCircle2 size={20} />
+                </button>
 
-                  {isLoggedIn ? (
-                    <>
-                      <button
-                        onClick={() => {
-                          setIsProfileOpen(false)
-                          navigate("/profile")
-                        }}
-                        className={menuItemClass}
-                      >
-                        <UserCircle2 size={16} />
-                        My Profile
-                      </button>
+                {isProfileOpen && (
+                  <div className="absolute right-0 z-50 mt-2 w-[min(92vw,260px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+                    <div className="mb-1 rounded-xl bg-slate-50 px-3 py-2">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">Account</p>
+                      <p className="text-sm font-semibold text-slate-800">{isAdmin ? "Administrator" : "User Menu"}</p>
+                    </div>
 
-                      {isUser ? (
-                        <>
-                          <button
-                            onClick={() => {
-                              setIsProfileOpen(false)
-                              navigate("/wishlist")
-                            }}
-                            className={menuItemClass}
-                          >
-                            <Heart size={16} />
-                            Wishlist
-                            {wishlistCount > 0 && (
-                              <span className="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
-                                {wishlistCount}
-                              </span>
-                            )}
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              setIsProfileOpen(false)
-                              navigate("/orders")
-                            }}
-                            className={menuItemClass}
-                          >
-                            <PackageCheck size={16} />
-                            My Orders
-                          </button>
-                        </>
-                      ) : (
+                    {isLoggedIn ? (
+                      <>
                         <button
                           onClick={() => {
                             setIsProfileOpen(false)
-                            navigate("/admin")
+                            navigate("/profile")
                           }}
                           className={menuItemClass}
                         >
-                          <Shield size={16} />
-                          Admin Panel
+                          <UserCircle2 size={16} />
+                          My Profile
                         </button>
-                      )}
 
-                      <div className="my-1 border-t border-[var(--border)]" />
+                        {isUser ? (
+                          <>
+                            <button
+                              onClick={() => {
+                                setIsProfileOpen(false)
+                                navigate("/wishlist")
+                              }}
+                              className={menuItemClass}
+                            >
+                              <Heart size={16} />
+                              Wishlist
+                              {wishlistCount > 0 && (
+                                <span className="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
+                                  {wishlistCount}
+                                </span>
+                              )}
+                            </button>
 
-                      <button
-                        onClick={() => {
-                          setIsProfileOpen(false)
-                          handleLogout()
-                        }}
-                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
-                      >
-                        <LogOut size={16} />
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => {
-                          setIsProfileOpen(false)
-                          navigate("/login")
-                        }}
-                        className={menuItemClass}
-                      >
-                        <UserCircle2 size={16} />
-                        Login
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsProfileOpen(false)
-                          navigate("/register")
-                        }}
-                        className={menuItemClass}
-                      >
-                        <Pencil size={16} />
-                        Register
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
+                            <button
+                              onClick={() => {
+                                setIsProfileOpen(false)
+                                navigate("/orders")
+                              }}
+                              className={menuItemClass}
+                            >
+                              <PackageCheck size={16} />
+                              My Orders
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setIsProfileOpen(false)
+                              navigate("/admin")
+                            }}
+                            className={menuItemClass}
+                          >
+                            <Shield size={16} />
+                            Admin Panel
+                          </button>
+                        )}
+
+                        <div className="my-1 border-t border-[var(--border)]" />
+
+                        <button
+                          onClick={() => {
+                            setIsProfileOpen(false)
+                            handleLogout()
+                          }}
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
+                        >
+                          <LogOut size={16} />
+                          Logout
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsProfileOpen(false)
+                            navigate("/login")
+                          }}
+                          className={menuItemClass}
+                        >
+                          <UserCircle2 size={16} />
+                          Login
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsProfileOpen(false)
+                            navigate("/register")
+                          }}
+                          className={menuItemClass}
+                        >
+                          <Pencil size={16} />
+                          Register
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

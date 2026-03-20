@@ -160,7 +160,7 @@ public class ProductService {
                 .stockQuantity(product.getStockQuantity())
                 .imageUrl(resolvePrimaryImage(product))
                 .imageUrls(resolveImageUrls(product))
-                .categoryName(product.getCategory().getName())
+                .categoryName(resolveCategoryName(product))
                 .averageRating(rating.averageRating())
                 .reviewCount(rating.reviewCount())
                 .inWishlist(inWishlist)
@@ -185,35 +185,31 @@ public class ProductService {
     }
 
     private String resolvePrimaryImage(ProductEntity product) {
-        List<String> images = resolveImageUrls(product);
-        if (!images.isEmpty()) {
-            return images.get(0);
+        String preferred = normalizeSingleImageUrl(product.getImageUrl());
+        if (preferred != null) {
+            return preferred;
         }
-        return product.getImageUrl();
+
+        List<String> images = normalizeImageUrls(product.getImageUrls());
+        return images.isEmpty() ? null : images.get(0);
     }
 
     private List<String> resolveImageUrls(ProductEntity product) {
-        List<String> normalized = normalizeImageUrls(product.getImageUrls());
-        if (normalized.isEmpty() && product.getImageUrl() != null && !product.getImageUrl().isBlank()) {
-            normalized.add(product.getImageUrl().trim());
-        }
-        return normalized;
+        return mergePrimaryImage(product.getImageUrl(), product.getImageUrls());
     }
 
     private String resolvePrimaryImage(String imageUrl, List<String> imageUrls) {
-        List<String> normalized = resolveImageUrls(imageUrl, imageUrls);
-        if (!normalized.isEmpty()) {
-            return normalized.get(0);
+        String preferred = normalizeSingleImageUrl(imageUrl);
+        if (preferred != null) {
+            return preferred;
         }
-        return imageUrl == null || imageUrl.isBlank() ? null : imageUrl.trim();
+
+        List<String> normalized = normalizeImageUrls(imageUrls);
+        return normalized.isEmpty() ? null : normalized.get(0);
     }
 
     private List<String> resolveImageUrls(String imageUrl, List<String> imageUrls) {
-        List<String> normalized = normalizeImageUrls(imageUrls);
-        if (normalized.isEmpty() && imageUrl != null && !imageUrl.isBlank()) {
-            normalized.add(imageUrl.trim());
-        }
-        return normalized;
+        return mergePrimaryImage(imageUrl, imageUrls);
     }
 
     private List<String> normalizeImageUrls(List<String> imageUrls) {
@@ -229,6 +225,27 @@ public class ProductService {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    private List<String> mergePrimaryImage(String imageUrl, List<String> imageUrls) {
+        List<String> normalized = normalizeImageUrls(imageUrls);
+        String preferred = normalizeSingleImageUrl(imageUrl);
+
+        if (preferred == null) {
+            return normalized;
+        }
+
+        normalized.removeIf(preferred::equals);
+        normalized.add(0, preferred);
+        return normalized;
+    }
+
+    private String normalizeSingleImageUrl(String imageUrl) {
+        if (imageUrl == null) {
+            return null;
+        }
+        String trimmed = imageUrl.trim();
+        return trimmed.isBlank() ? null : trimmed;
+    }
+
     private Optional<UserEntity> getCurrentUserOptional() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -240,7 +257,25 @@ public class ProductService {
             return Optional.empty();
         }
 
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmailIgnoreCase(email);
+    }
+
+    private String resolveCategoryName(ProductEntity product) {
+        if (product.getCategory() == null) {
+            return null;
+        }
+
+        try {
+            return product.getCategory().getName();
+        } catch (Exception ignored) {
+            Long categoryId = product.getCategory().getId();
+            if (categoryId == null) {
+                return null;
+            }
+            return categoryRepository.findById(categoryId)
+                    .map(CategoryEntity::getName)
+                    .orElse(null);
+        }
     }
 
     private record ProductViewContext(

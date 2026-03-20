@@ -116,7 +116,7 @@ const AdminOrders = () => {
                 }))
               }
               placeholder="Search by customer email"
-              className="field-input pl-10"
+              className="field-input field-input-icon"
             />
           </label>
 

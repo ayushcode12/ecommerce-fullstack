@@ -8,7 +8,8 @@ import getApiErrorMessage from "../utils/getApiErrorMessage"
 const ForgotPassword = () => {
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
-  const [resetToken, setResetToken] = useState("")
+  const [responseMessage, setResponseMessage] = useState("")
+  const [submittedEmail, setSubmittedEmail] = useState("")
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -20,9 +21,10 @@ const ForgotPassword = () => {
     try {
       setLoading(true)
       const response = await api.post("/auth/forgot-password", { email })
-      const token = response.data?.resetToken || ""
-      setResetToken(token)
-      toast.success(response.data?.message || "Reset link generated")
+      const message = response.data?.message || "If this email exists, OTP has been sent."
+      setResponseMessage(message)
+      setSubmittedEmail(email.trim())
+      toast.success(message)
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Unable to start reset flow"))
     } finally {
@@ -42,7 +44,7 @@ const ForgotPassword = () => {
         </p>
         <h1 className="mt-3 font-display text-3xl font-bold text-slate-900">Reset your password</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Enter your account email. For this student project, a test reset token is shown directly.
+          Enter your registered email. A 6-digit OTP will be sent for password reset.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -55,27 +57,24 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@example.com"
-                className="field-input pl-10"
+                className="field-input field-input-icon"
               />
             </div>
           </label>
 
           <button type="submit" disabled={loading} className="btn-primary w-full">
-            {loading ? "Generating..." : "Generate Reset Token"}
+            {loading ? "Sending OTP..." : "Send OTP"}
           </button>
         </form>
 
-        {resetToken && (
-          <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">Test Reset Token</p>
-            <p className="mt-2 break-all rounded-lg bg-white px-3 py-2 font-mono text-xs text-slate-700">
-              {resetToken}
-            </p>
+        {responseMessage && (
+          <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-sm font-semibold text-emerald-800">{responseMessage}</p>
             <Link
-              to={`/reset-password?token=${encodeURIComponent(resetToken)}`}
-              className="mt-3 inline-flex items-center rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+              to={`/reset-password${submittedEmail ? `?email=${encodeURIComponent(submittedEmail)}` : ""}`}
+              className="mt-3 inline-flex items-center rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100"
             >
-              Open Reset Page
+              Continue to OTP Verification
             </Link>
           </div>
         )}

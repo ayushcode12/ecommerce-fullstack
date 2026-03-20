@@ -33,6 +33,9 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
   const [loadingInitial, setLoadingInitial] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [categories, setCategories] = useState([])
+  const [isMobileView, setIsMobileView] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  )
 
   const loadMoreRef = useRef(null)
   const requestIdRef = useRef(0)
@@ -53,6 +56,15 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
     }
 
     fetchCategories()
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768)
+    }
+
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   useEffect(() => {
@@ -142,7 +154,7 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
   const selectedCategory = categories.find((category) => Number(category.id) === Number(categoryId))
 
   useEffect(() => {
-    if (!loadMoreRef.current || !hasMore || loadingInitial || loadingMore) {
+    if (isMobileView || !loadMoreRef.current || !hasMore || loadingInitial || loadingMore) {
       return
     }
 
@@ -159,7 +171,7 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
 
     observer.observe(loadMoreRef.current)
     return () => observer.disconnect()
-  }, [hasMore, loadingInitial, loadingMore])
+  }, [hasMore, loadingInitial, loadingMore, isMobileView])
 
   return (
     <div className="page-wrap animate-fadeIn">
@@ -196,7 +208,7 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
                 placeholder="Search products by name or keyword"
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                className="field-input !pl-12"
+                className="field-input field-input-icon-lg"
               />
             </label>
 
@@ -243,7 +255,7 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
 
         <section>
           {loadingInitial ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
@@ -265,7 +277,7 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
               No products found for this filter.
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -285,14 +297,24 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
             {loadingMore ? (
               <p className="text-sm text-slate-600">Loading more products...</p>
             ) : hasMore ? (
-              <p className="text-sm text-slate-500">Scroll to load more</p>
+              isMobileView ? (
+                <button
+                  type="button"
+                  onClick={() => setPage((prevPage) => prevPage + 1)}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-200 hover:text-teal-700"
+                >
+                  Load more products
+                </button>
+              ) : (
+                <p className="text-sm text-slate-500">Scroll to load more</p>
+              )
             ) : (
               <p className="text-sm text-slate-500">You have reached the end.</p>
             )}
           </section>
         )}
 
-        <div ref={loadMoreRef} className="h-1" />
+        {!isMobileView && <div ref={loadMoreRef} className="h-1" />}
       </div>
     </div>
   )

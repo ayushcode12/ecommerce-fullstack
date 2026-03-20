@@ -103,19 +103,19 @@ const HomePage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1500px] space-y-8 px-3 py-5 sm:space-y-10 sm:px-4 sm:py-6 md:space-y-12 md:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto w-full max-w-[1500px] space-y-7 px-3 py-4 sm:space-y-10 sm:px-4 sm:py-6 md:space-y-12 md:px-6 md:py-10 lg:px-8">
         <section className="relative overflow-hidden rounded-3xl border border-white/30 bg-gradient-to-br from-slate-900 via-slate-800 to-teal-800 p-4 text-white shadow-[0_26px_70px_rgba(15,23,42,0.4)] sm:rounded-[2rem] sm:p-7 md:p-10 lg:p-12">
           <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-cyan-300/20 blur-3xl" />
           <div className="absolute -bottom-20 left-8 h-56 w-56 rounded-full bg-blue-300/20 blur-3xl" />
 
-          <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1fr_420px]">
+          <div className="relative z-10 grid items-center gap-7 sm:gap-8 lg:grid-cols-[1fr_420px]">
             <div className="max-w-3xl">
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]">
+              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] sm:text-xs sm:tracking-[0.22em]">
                 <Sparkles size={14} />
                 New Season Drop
               </p>
 
-              <h1 className="font-display text-2xl font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="font-display text-[clamp(1.95rem,7.4vw,2.7rem)] font-bold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
                 Build standout looks with premium everyday fashion
               </h1>
 
@@ -124,13 +124,13 @@ const HomePage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
                 comfort, trend, and confidence.
               </p>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
                 {quickCategories.length > 0 &&
                   quickCategories.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => navigate(`/products?categoryId=${category.id}`)}
-                      className="rounded-full border border-white/35 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/95 transition hover:bg-white/20"
+                      className="shrink-0 rounded-full border border-white/35 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/95 transition hover:bg-white/20"
                     >
                       {category.name}
                     </button>
@@ -154,6 +154,16 @@ const HomePage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
                 >
                   Explore Categories
                 </button>
+              </div>
+
+              <div className="mt-6 lg:hidden">
+                <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-2.5 shadow-xl backdrop-blur-sm">
+                  <img
+                    src="/hero-fashion.svg"
+                    alt="Fashion apparel collection"
+                    className="h-[220px] w-full rounded-xl bg-slate-900/20 p-2 object-contain"
+                  />
+                </div>
               </div>
             </div>
 
@@ -201,7 +211,7 @@ const HomePage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
                 Jump directly into your preferred clothing style.
               </p>
             </div>
-            <div className="rounded-full border border-rose-100 bg-rose-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-rose-700 sm:px-4 sm:py-2 sm:text-xs">
+            <div className="rounded-full border border-rose-100 bg-rose-50 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-rose-700 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.15em]">
               {sortedCategories.length} Collections
             </div>
           </div>
@@ -272,7 +282,7 @@ const HomePage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
           </div>
 
           {loadingFeatured ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <div key={index} className="surface-card animate-pulse rounded-3xl p-4">
                   <div className="h-36 rounded-xl bg-slate-200" />
@@ -287,7 +297,7 @@ const HomePage = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
               No featured styles available right now.
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
               {featuredProducts.map((product) => (
                 <ProductCard
                   key={product.id}

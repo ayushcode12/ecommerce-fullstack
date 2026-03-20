@@ -58,7 +58,7 @@ const getPaymentBadge = (paymentMethod, paymentState) => {
   }
   if (paymentMethod === "Online (Razorpay)") {
     return {
-      label: `Online · ${paymentState || "Paid"}`,
+      label: `Online - ${paymentState || "Paid"}`,
       icon: CreditCard,
       className: "bg-emerald-50 text-emerald-700 border-emerald-200"
     }
@@ -127,7 +127,7 @@ const Orders = ({ refreshCartCount }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto w-full max-w-[1200px] space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <div className="surface-card rounded-3xl p-5 md:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-700">
             Order Tracking
@@ -179,7 +179,7 @@ const Orders = ({ refreshCartCount }) => {
                 >
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                      <h2 className="font-display text-xl font-bold text-slate-900">Order #{order.orderId}</h2>
+                      <h2 className="font-display text-lg font-bold text-slate-900 sm:text-xl">Order #{order.orderId}</h2>
                       <p className="mt-1 inline-flex items-center gap-1 text-xs text-slate-500">
                         <CalendarClock size={13} />
                         Placed on {formatOrderDate(order.createdAt)}
@@ -205,7 +205,7 @@ const Orders = ({ refreshCartCount }) => {
                           )
                         })()}
                       </div>
-                      <p className="font-display text-2xl font-bold text-rose-700">
+                      <p className="font-display text-xl font-bold text-rose-700 sm:text-2xl">
                         {formatCurrency(order.totalAmount)}
                       </p>
                     </div>
@@ -225,7 +225,7 @@ const Orders = ({ refreshCartCount }) => {
                         return (
                           <div key={step.key} className="flex items-center gap-2">
                             <span className={`h-2.5 w-2.5 rounded-full border ${classes.dot}`} />
-                            <span className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${classes.text}`}>
+                            <span className={`text-[10px] font-semibold uppercase tracking-[0.1em] sm:text-[11px] sm:tracking-[0.12em] ${classes.text}`}>
                               {step.label}
                             </span>
                           </div>
@@ -278,5 +278,6 @@ const Orders = ({ refreshCartCount }) => {
 }
 
 export default Orders
+
 
 

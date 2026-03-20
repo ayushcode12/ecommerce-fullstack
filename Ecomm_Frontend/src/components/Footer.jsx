@@ -3,8 +3,8 @@ import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa"
 
 const Footer = () => {
   return (
-    <footer className="mt-10 border-t border-[var(--border)] bg-white/85 backdrop-blur-xl md:mt-20">
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 sm:gap-10 sm:px-6 md:py-12 lg:grid-cols-4 lg:px-8">
+    <footer className="mt-9 border-t border-[var(--border)] bg-white/85 backdrop-blur-xl md:mt-20">
+      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-1 gap-7 px-4 py-8 sm:grid-cols-2 sm:gap-10 sm:px-6 sm:py-10 md:py-12 lg:grid-cols-4 lg:px-8">
         <div className="space-y-4">
           <h2 className="font-display text-2xl font-bold text-slate-900">
             Urban <span className="text-rose-600">Threads</span>
@@ -28,7 +28,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.18em] text-slate-500">
+          <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.14em] text-slate-500 sm:text-sm sm:tracking-[0.18em]">
             Quick Links
           </h3>
           <ul className="space-y-3 text-sm text-slate-700">
@@ -61,7 +61,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.18em] text-slate-500">
+          <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.14em] text-slate-500 sm:text-sm sm:tracking-[0.18em]">
             Customer Care
           </h3>
           <ul className="space-y-3 text-sm text-slate-700">
@@ -73,7 +73,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.18em] text-slate-500">
+          <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.14em] text-slate-500 sm:text-sm sm:tracking-[0.18em]">
             Contact
           </h3>
           <p className="text-sm text-slate-700">Agra, Uttar Pradesh, India</p>

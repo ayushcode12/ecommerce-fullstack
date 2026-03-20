@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Plus, Save, Trash2, Upload, X } from "lucide-react"
+import { Plus, Save, Star, Trash2, Upload, X } from "lucide-react"
 import toast from "react-hot-toast"
 import api from "../../api/axiosInstance"
 import AdminShell from "../../components/admin/AdminShell"
@@ -11,6 +11,7 @@ const EMPTY_FORM = {
   price: "",
   stockQuantity: "",
   categoryId: "",
+  imageUrl: "",
   imageUrls: [""]
 }
 
@@ -103,27 +104,34 @@ const AdminProducts = () => {
   }
 
   const onEditProduct = (product) => {
-    const images =
+    const rawImages =
       Array.isArray(product.imageUrls) && product.imageUrls.length > 0
         ? product.imageUrls
         : product.imageUrl
           ? [product.imageUrl]
           : [""]
+    const normalizedImages = rawImages.map((url) => (url || "").trim()).filter(Boolean)
+    const primaryImage = (product.imageUrl || "").trim()
+    const orderedImages = primaryImage
+      ? [primaryImage, ...normalizedImages.filter((url) => url !== primaryImage)]
+      : normalizedImages
+    const imageUrls = orderedImages.length > 0 ? orderedImages : [""]
 
     setEditingId(product.id)
-    setOriginalImageUrls(images.filter(Boolean))
+    setOriginalImageUrls(imageUrls.filter(Boolean))
     setProductForm({
       name: product.name || "",
       description: product.description || "",
       price: product.price?.toString() || "",
       stockQuantity: product.stockQuantity?.toString() || "",
       categoryId: categories.find((category) => category.name === product.categoryName)?.id?.toString() || "",
-      imageUrls: images
+      imageUrl: primaryImage || imageUrls[0] || "",
+      imageUrls
     })
   }
 
   const normalizedImageUrls = useMemo(
-    () => productForm.imageUrls.map((url) => url.trim()).filter(Boolean),
+    () => [...new Set(productForm.imageUrls.map((url) => url.trim()).filter(Boolean))],
     [productForm.imageUrls]
   )
 
@@ -136,9 +144,23 @@ const AdminProducts = () => {
   const updateImageField = (index, value) => {
     setProductForm((prev) => {
       const nextImages = [...prev.imageUrls]
+      const previousValue = (nextImages[index] || "").trim()
       nextImages[index] = value
-      return { ...prev, imageUrls: nextImages }
+      const nextValue = value.trim()
+      const currentPrimary = (prev.imageUrl || "").trim()
+      const nextPrimary = currentPrimary && currentPrimary === previousValue ? nextValue : currentPrimary
+      return { ...prev, imageUrls: nextImages, imageUrl: nextPrimary }
     })
+  }
+
+  const setShowcaseImage = (imageUrl) => {
+    const normalized = (imageUrl || "").trim()
+    if (!normalized) return
+
+    setProductForm((prev) => ({
+      ...prev,
+      imageUrl: normalized
+    }))
   }
 
   const deleteCloudinaryImages = async (imageUrls) => {
@@ -164,7 +186,15 @@ const AdminProducts = () => {
 
       setProductForm((prev) => {
         const nextImages = prev.imageUrls.filter((_, currentIndex) => currentIndex !== index)
-        return { ...prev, imageUrls: nextImages.length > 0 ? nextImages : [""] }
+        const remainingImages = nextImages.length > 0 ? nextImages : [""]
+        const removedImage = imageUrl
+        const currentPrimary = (prev.imageUrl || "").trim()
+        const normalizedRemaining = remainingImages.map((url) => url.trim()).filter(Boolean)
+        const nextPrimary = currentPrimary && currentPrimary !== removedImage
+          ? currentPrimary
+          : normalizedRemaining[0] || ""
+
+        return { ...prev, imageUrls: remainingImages, imageUrl: nextPrimary }
       })
     } catch (error) {
       console.log("Failed to remove image from Cloudinary:", error.response?.data || error.message)
@@ -174,14 +204,23 @@ const AdminProducts = () => {
     }
   }
 
-  const buildPayload = () => ({
-    name: productForm.name.trim(),
-    description: productForm.description.trim(),
-    price: Number(productForm.price),
-    stockQuantity: Number(productForm.stockQuantity),
-    categoryId: Number(productForm.categoryId),
-    imageUrls: normalizedImageUrls
-  })
+  const buildPayload = () => {
+    const selectedShowcase = (productForm.imageUrl || "").trim()
+    const orderedImages = selectedShowcase
+      ? [selectedShowcase, ...normalizedImageUrls.filter((url) => url !== selectedShowcase)]
+      : [...normalizedImageUrls]
+    const primaryImage = selectedShowcase || orderedImages[0] || null
+
+    return {
+      name: productForm.name.trim(),
+      description: productForm.description.trim(),
+      price: Number(productForm.price),
+      stockQuantity: Number(productForm.stockQuantity),
+      categoryId: Number(productForm.categoryId),
+      imageUrl: primaryImage,
+      imageUrls: orderedImages
+    }
+  }
 
   const upsertSelectedFiles = (incomingFiles) => {
     const imageFiles = (incomingFiles || []).filter((file) => file.type?.startsWith("image/"))
@@ -223,7 +262,11 @@ const AdminProducts = () => {
       setProductForm((prev) => {
         const existing = prev.imageUrls.map((url) => url.trim()).filter(Boolean)
         const merged = [...new Set([...existing, ...uploadedUrls])]
-        return { ...prev, imageUrls: merged.length > 0 ? merged : [""] }
+        const currentPrimary = (prev.imageUrl || "").trim()
+        const nextPrimary = currentPrimary && merged.includes(currentPrimary)
+          ? currentPrimary
+          : merged[0] || ""
+        return { ...prev, imageUrls: merged.length > 0 ? merged : [""], imageUrl: nextPrimary }
       })
 
       setSelectedFiles([])
@@ -240,8 +283,12 @@ const AdminProducts = () => {
   const onSaveProduct = async (event) => {
     event.preventDefault()
     const payload = buildPayload()
+    const hasInvalidNumbers =
+      Number.isNaN(payload.price) ||
+      Number.isNaN(payload.stockQuantity) ||
+      Number.isNaN(payload.categoryId)
 
-    if (!payload.name || !payload.categoryId || payload.price <= 0 || payload.stockQuantity < 0) {
+    if (!payload.name || !payload.categoryId || hasInvalidNumbers || payload.price <= 0 || payload.stockQuantity < 0) {
       toast.error("Fill name, category, valid price, and stock before saving.")
       return
     }
@@ -581,6 +628,9 @@ const AdminProducts = () => {
                   Add URL Field
                 </button>
               </div>
+              <p className="text-xs text-slate-500">
+                Select one image as showcase. That image appears first on product cards.
+              </p>
 
               <div
                 onDragOver={(event) => {
@@ -649,38 +699,57 @@ const AdminProducts = () => {
                 </div>
               )}
 
-              {productForm.imageUrls.map((imageUrl, index) => (
-                <div key={index} className="rounded-xl border border-[var(--border)] bg-white p-2">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                    <div className="h-16 w-16 overflow-hidden rounded-lg border border-[var(--border)] bg-slate-100">
-                      <img
-                        src={imageUrl || "/fallback.svg"}
-                        alt={`Product preview ${index + 1}`}
-                        onError={(event) => {
-                          event.target.src = "/fallback.svg"
-                        }}
-                        className="h-full w-full object-cover"
+              {productForm.imageUrls.map((imageUrl, index) => {
+                const normalizedImage = (imageUrl || "").trim()
+                const isShowcase = normalizedImage.length > 0 && normalizedImage === (productForm.imageUrl || "").trim()
+
+                return (
+                  <div key={index} className="rounded-xl border border-[var(--border)] bg-white p-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <div className="h-16 w-16 overflow-hidden rounded-lg border border-[var(--border)] bg-slate-100">
+                        <img
+                          src={imageUrl || "/fallback.svg"}
+                          alt={`Product preview ${index + 1}`}
+                          onError={(event) => {
+                            event.target.src = "/fallback.svg"
+                          }}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+
+                      <input
+                        value={imageUrl}
+                        onChange={(event) => updateImageField(index, event.target.value)}
+                        placeholder="https://..."
+                        className="field-input"
                       />
+
+                      <button
+                        type="button"
+                        disabled={!normalizedImage}
+                        onClick={() => setShowcaseImage(normalizedImage)}
+                        className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${
+                          isShowcase
+                            ? "border border-amber-200 bg-amber-50 text-amber-700"
+                            : "border border-[var(--border)] bg-white text-slate-700 hover:border-amber-200 hover:text-amber-700"
+                        } disabled:cursor-not-allowed disabled:opacity-50`}
+                      >
+                        <Star size={12} className={isShowcase ? "fill-current" : ""} />
+                        {isShowcase ? "Showcase" : "Set Showcase"}
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={deletingImageUrl === imageUrl}
+                        onClick={() => removeImageField(index)}
+                        className="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-2 text-xs font-semibold text-rose-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {deletingImageUrl === imageUrl ? "Removing..." : "Remove"}
+                      </button>
                     </div>
-
-                    <input
-                      value={imageUrl}
-                      onChange={(event) => updateImageField(index, event.target.value)}
-                      placeholder="https://..."
-                      className="field-input"
-                    />
-
-                    <button
-                      type="button"
-                      disabled={deletingImageUrl === imageUrl}
-                      onClick={() => removeImageField(index)}
-                      className="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-2 text-xs font-semibold text-rose-700 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {deletingImageUrl === imageUrl ? "Removing..." : "Remove"}
-                    </button>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row">

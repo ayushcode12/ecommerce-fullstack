@@ -23,9 +23,10 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 160)
     private String name;
 
+    @Column(length = 4000)
     private String description;
 
     @Column(nullable = false)
@@ -35,12 +36,12 @@ public class ProductEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-
+    @Column(length = 2048)
     private String imageUrl;
 
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 2048)
     private List<String> imageUrls = new ArrayList<>();
 
     @Column(nullable = false)

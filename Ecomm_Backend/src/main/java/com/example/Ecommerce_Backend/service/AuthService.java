@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -34,11 +35,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final PasswordResetMailService passwordResetMailService;
 
     @Value("${jwt.refresh-expiration}")
     private Long refreshExpirationMs;
 
-    private static final long RESET_PASSWORD_EXPIRATION_MINUTES = 15;
+    private static final long RESET_PASSWORD_OTP_EXPIRATION_MINUTES = 10;
+    private static final long RESET_PASSWORD_OTP_RESEND_COOLDOWN_SECONDS = 60;
+    private static final int RESET_PASSWORD_OTP_MAX_ATTEMPTS = 5;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     public AuthResponseDTO register(RegisterRequestDTO request) {
 
@@ -106,43 +111,78 @@ public class AuthService {
     }
 
     public ForgotPasswordResponseDTO requestPasswordReset(ForgotPasswordRequestDTO requestDTO) {
-        String genericMessage = "If this email exists, reset instructions have been generated.";
-
-        UserEntity user = userRepository.findByEmail(requestDTO.getEmail().trim()).orElse(null);
+        String genericMessage = "If this email exists, an OTP has been sent for password reset.";
+        String normalizedEmail = requestDTO.getEmail().trim();
+        UserEntity user = userRepository.findByEmailIgnoreCase(normalizedEmail).orElse(null);
         if (user == null) {
             return ForgotPasswordResponseDTO.builder()
                     .message(genericMessage)
-                    .resetToken(null)
                     .build();
         }
 
-        String resetToken = UUID.randomUUID().toString();
-        user.setResetPasswordTokenHash(hashToken(resetToken));
-        user.setResetPasswordTokenExpiresAt(LocalDateTime.now().plusMinutes(RESET_PASSWORD_EXPIRATION_MINUTES));
+        LocalDateTime now = LocalDateTime.now();
+        if (user.getResetPasswordOtpRequestedAt() != null &&
+                user.getResetPasswordOtpRequestedAt().plusSeconds(RESET_PASSWORD_OTP_RESEND_COOLDOWN_SECONDS).isAfter(now)) {
+            return ForgotPasswordResponseDTO.builder()
+                    .message(genericMessage)
+                    .build();
+        }
+
+        String otp = generateOtp();
+        user.setResetPasswordTokenHash(hashToken(otp));
+        user.setResetPasswordTokenExpiresAt(now.plusMinutes(RESET_PASSWORD_OTP_EXPIRATION_MINUTES));
+        user.setResetPasswordOtpRequestedAt(now);
+        user.setResetPasswordOtpAttempts(0);
         userRepository.save(user);
 
-        return ForgotPasswordResponseDTO.builder()
-                .message(genericMessage)
-                .resetToken(resetToken)
-                .build();
+        try {
+            passwordResetMailService.sendPasswordResetOtp(
+                    user.getEmail(),
+                    user.getName(),
+                    otp,
+                    RESET_PASSWORD_OTP_EXPIRATION_MINUTES
+            );
+            return ForgotPasswordResponseDTO.builder()
+                    .message(genericMessage)
+                    .build();
+        } catch (IllegalStateException ex) {
+            clearResetOtpState(user);
+            userRepository.save(user);
+            return ForgotPasswordResponseDTO.builder()
+                    .message(genericMessage)
+                    .build();
+        }
     }
 
     public void resetPassword(ResetPasswordRequestDTO requestDTO) {
-        String tokenHash = hashToken(requestDTO.getToken());
-        UserEntity user = userRepository.findByResetPasswordTokenHash(tokenHash)
-                .orElseThrow(() -> new BadRequestException("Invalid or expired reset token"));
+        String email = requestDTO.getEmail().trim();
+        UserEntity user = userRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new BadRequestException("Invalid or expired OTP"));
 
         if (user.getResetPasswordTokenExpiresAt() == null ||
+                user.getResetPasswordTokenHash() == null ||
                 user.getResetPasswordTokenExpiresAt().isBefore(LocalDateTime.now())) {
-            user.setResetPasswordTokenHash(null);
-            user.setResetPasswordTokenExpiresAt(null);
+            clearResetOtpState(user);
             userRepository.save(user);
-            throw new BadRequestException("Invalid or expired reset token");
+            throw new BadRequestException("Invalid or expired OTP");
+        }
+
+        int attempts = user.getResetPasswordOtpAttempts() == null ? 0 : user.getResetPasswordOtpAttempts();
+        if (attempts >= RESET_PASSWORD_OTP_MAX_ATTEMPTS) {
+            clearResetOtpState(user);
+            userRepository.save(user);
+            throw new BadRequestException("Too many invalid OTP attempts. Please request a new OTP.");
+        }
+
+        String otpHash = hashToken(requestDTO.getOtp().trim());
+        if (!otpHash.equals(user.getResetPasswordTokenHash())) {
+            user.setResetPasswordOtpAttempts(attempts + 1);
+            userRepository.save(user);
+            throw new BadRequestException("Invalid or expired OTP");
         }
 
         user.setPassword(passwordEncoder.encode(requestDTO.getNewPassword()));
-        user.setResetPasswordTokenHash(null);
-        user.setResetPasswordTokenExpiresAt(null);
+        clearResetOtpState(user);
         user.setRefreshTokenHash(null);
         user.setRefreshTokenExpiresAt(null);
         userRepository.save(user);
@@ -173,6 +213,18 @@ public class AuthService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Failed to hash token", e);
         }
+    }
+
+    private String generateOtp() {
+        int otpNumber = 100000 + SECURE_RANDOM.nextInt(900000);
+        return String.valueOf(otpNumber);
+    }
+
+    private void clearResetOtpState(UserEntity user) {
+        user.setResetPasswordTokenHash(null);
+        user.setResetPasswordTokenExpiresAt(null);
+        user.setResetPasswordOtpRequestedAt(null);
+        user.setResetPasswordOtpAttempts(0);
     }
 
 }

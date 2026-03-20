@@ -81,7 +81,7 @@ const Wishlist = ({ refreshCartCount, refreshWishlistIds }) => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="surface-card animate-pulse rounded-3xl p-4">
                 <div className="h-44 rounded-2xl bg-slate-200" />
@@ -98,19 +98,19 @@ const Wishlist = ({ refreshCartCount, refreshWishlistIds }) => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {wishlistItems.map((item) => {
               const imageUrl =
                 item.imageUrl ||
                 (Array.isArray(item.imageUrls) && item.imageUrls.length > 0 ? item.imageUrls[0] : "/fallback.svg")
 
               return (
-                <div key={item.productId} className="surface-card overflow-hidden rounded-3xl">
+                <div key={item.productId} className="surface-card overflow-hidden rounded-2xl sm:rounded-3xl">
                   <button
                     onClick={() => navigate(`/product/${item.productId}`)}
                     className="w-full"
                   >
-                    <div className="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                    <div className="relative aspect-square overflow-hidden bg-slate-100 sm:aspect-[4/5]">
                       <img
                         src={imageUrl}
                         alt={item.name}
@@ -122,33 +122,33 @@ const Wishlist = ({ refreshCartCount, refreshWishlistIds }) => {
                     </div>
                   </button>
 
-                  <div className="space-y-3 p-5">
-                    <span className="inline-flex rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700">
+                  <div className="space-y-2.5 p-3 sm:space-y-3 sm:p-5">
+                    <span className="inline-flex rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700 sm:px-2.5 sm:py-1 sm:text-xs">
                       {item.categoryName}
                     </span>
-                    <h3 className="font-display text-xl font-bold text-slate-900">{item.name}</h3>
-                    <p className="line-clamp-2 text-sm text-slate-600">{item.description}</p>
+                    <h3 className="font-display text-base font-bold leading-tight text-slate-900 sm:text-xl">{item.name}</h3>
+                    <p className="line-clamp-1 text-xs text-slate-600 sm:line-clamp-2 sm:text-sm">{item.description}</p>
 
-                    <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                    <div className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-xs">
                       <Star size={12} className={Number(item.reviewCount || 0) > 0 ? "fill-current" : ""} />
                       {Number(item.averageRating || 0).toFixed(1)} ({Number(item.reviewCount || 0)})
                     </div>
 
-                    <div className="font-display text-2xl font-bold text-rose-700">Rs {item.price}</div>
+                    <div className="font-display text-lg font-bold text-rose-700 sm:text-2xl">Rs {item.price}</div>
 
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
                       <button
                         disabled={updatingId === item.productId}
                         onClick={() => handleAddToCart(item.productId)}
-                        className="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
                       >
                         <ShoppingBag size={14} />
-                        Add to Cart
+                        Add
                       </button>
                       <button
                         disabled={updatingId === item.productId}
                         onClick={() => handleRemove(item.productId)}
-                        className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-rose-200 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-4 sm:py-2 sm:text-sm"
                       >
                         <Trash2 size={14} />
                         Remove

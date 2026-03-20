@@ -293,7 +293,7 @@ const OrderDetails = ({ refreshCartCount }) => {
       <div className="page-accent page-accent--left" />
       <div className="page-accent page-accent--right" />
 
-      <div className="mx-auto w-full max-w-[1200px] space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto w-full max-w-[1200px] space-y-4 px-3 py-4 sm:space-y-6 sm:px-4 sm:py-6 md:px-6 md:py-10 lg:px-8">
         <button
           onClick={() => navigate("/orders")}
           className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 backdrop-blur hover:bg-white"
@@ -303,7 +303,7 @@ const OrderDetails = ({ refreshCartCount }) => {
         </button>
 
         <section className="surface-card overflow-hidden rounded-3xl border border-[var(--border)] p-0">
-          <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700 px-5 py-5 text-white sm:px-6 md:px-8">
+          <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700 px-4 py-4 text-white sm:px-6 sm:py-5 md:px-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-100">Order Tracking</p>
@@ -316,7 +316,7 @@ const OrderDetails = ({ refreshCartCount }) => {
                 </p>
               </div>
 
-              <div className="text-left md:text-right">
+              <div className="w-full text-left md:w-auto md:text-right">
                 <div className="flex flex-wrap items-center justify-start gap-1.5 md:justify-end">
                   <span className="inline-flex rounded-full border border-white/35 bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                     {statusMeta.label}
@@ -340,7 +340,7 @@ const OrderDetails = ({ refreshCartCount }) => {
                   <button
                     onClick={handleCancelOrder}
                     disabled={cancelingOrder}
-                    className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-70"
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
                   >
                     {cancelingOrder ? "Cancelling..." : "Cancel Order"}
                   </button>
@@ -349,7 +349,7 @@ const OrderDetails = ({ refreshCartCount }) => {
                   <button
                     onClick={handleReorder}
                     disabled={reordering}
-                    className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/35 bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-70"
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
                   >
                     {reordering ? "Reordering..." : "Reorder"}
                   </button>
@@ -366,22 +366,22 @@ const OrderDetails = ({ refreshCartCount }) => {
             />
             </div>
 
-            <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
               <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Items</p>
-                <p className="mt-1 text-lg font-bold text-slate-900">{itemCount}</p>
+                <p className="mt-1 text-base font-bold text-slate-900 sm:text-lg">{itemCount}</p>
               </div>
               <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Progress</p>
-                <p className="mt-1 text-lg font-bold text-slate-900">{Math.round(progressPercent)}%</p>
+                <p className="mt-1 text-base font-bold text-slate-900 sm:text-lg">{Math.round(progressPercent)}%</p>
               </div>
               <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Expected</p>
-                <p className="mt-1 text-lg font-bold text-slate-900">{estimatedDelivery || "Closed"}</p>
+                <p className="mt-1 text-base font-bold text-slate-900 sm:text-lg">{estimatedDelivery || "Closed"}</p>
               </div>
               <div className="rounded-2xl border border-[var(--border)] bg-slate-50 px-4 py-3">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Payment</p>
-                <p className="mt-1 text-lg font-bold text-slate-900">{paymentStatus?.heroValue ?? "-"}</p>
+                <p className="mt-1 text-base font-bold text-slate-900 sm:text-lg">{paymentStatus?.heroValue ?? "-"}</p>
               </div>
             </div>
           </div>
