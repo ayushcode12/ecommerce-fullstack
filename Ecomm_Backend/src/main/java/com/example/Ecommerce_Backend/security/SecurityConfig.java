@@ -36,8 +36,8 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.cors.allowed-origins:http://localhost:5173}")
-    private String allowedOriginsProperty;
+    @Value("${app.cors.allowed-origin-patterns:${app.cors.allowed-origins:http://localhost:5173}}")
+    private String allowedOriginPatternsProperty;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -75,13 +75,15 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        List<String> allowedOrigins = Arrays.stream(allowedOriginsProperty.split(","))
+        List<String> allowedOriginPatterns = Arrays.stream(allowedOriginPatternsProperty.split(","))
                 .map(String::trim)
-                .filter(origin -> !origin.isBlank())
+                .filter(pattern -> !pattern.isBlank())
                 .toList();
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins.isEmpty() ? List.of("http://localhost:5173") : allowedOrigins);
+        configuration.setAllowedOriginPatterns(
+                allowedOriginPatterns.isEmpty() ? List.of("http://localhost:5173") : allowedOriginPatterns
+        );
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
