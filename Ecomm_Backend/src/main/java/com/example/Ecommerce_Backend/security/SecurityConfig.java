@@ -3,6 +3,7 @@ package com.example.Ecommerce_Backend.security;
 import com.example.Ecommerce_Backend.security.jwt.JwtAuthenticationFilter;
 import com.example.Ecommerce_Backend.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -34,6 +36,9 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    private String allowedOriginsProperty;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
@@ -44,7 +49,8 @@ public class SecurityConfig {
                             "/auth/login",
                             "/auth/refresh",
                             "/auth/forgot-password",
-                            "/auth/reset-password"
+                            "/auth/reset-password",
+                            "/health"
                     ).permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/products/**").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/categories/**").permitAll()
@@ -69,8 +75,13 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        List<String> allowedOrigins = Arrays.stream(allowedOriginsProperty.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .toList();
+
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(allowedOrigins.isEmpty() ? List.of("http://localhost:5173") : allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

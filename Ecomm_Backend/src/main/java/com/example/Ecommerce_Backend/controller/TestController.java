@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
+    @GetMapping("/health")
+    public String health() {
+        return "ok";
+    }
+
     @GetMapping("/test")
     public String test() {
         return "Secured endpoint working";

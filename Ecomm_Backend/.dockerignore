@@ -1,0 +1,8 @@
+.git
+.gitignore
+.idea
+target
+.m2repo
+.m2link
+hs_err_pid*.log
+replay_pid*.log
