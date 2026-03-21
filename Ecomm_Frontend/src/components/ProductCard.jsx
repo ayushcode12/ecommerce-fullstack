@@ -37,6 +37,12 @@ const ProductCard = ({
   const handleAddToCart = async (event) => {
     event.stopPropagation()
 
+    if (!token || !isUser) {
+      toast.error("Please login as user to add items to cart.")
+      navigate("/login")
+      return
+    }
+
     setUpdatingQuantity(true)
     try {
       await api.post(`/cart/add?productId=${product.id}&quantity=1`)

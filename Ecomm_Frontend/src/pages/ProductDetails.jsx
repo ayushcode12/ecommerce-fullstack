@@ -114,6 +114,12 @@ const ProductDetails = ({ refreshCartCount, wishlistIds = new Set(), refreshWish
   }, [myReview])
 
   const handleAddToCart = async () => {
+    if (!token || !isUser) {
+      toast.error("Please login as user to add items to cart.")
+      navigate("/login")
+      return
+    }
+
     try {
       setAdding(true)
       await api.post(`/cart/add?productId=${id}&quantity=1`)
