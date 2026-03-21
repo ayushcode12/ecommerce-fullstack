@@ -98,7 +98,7 @@ function App() {
   }, [])
 
   return (
-    <div>
+    <div className="min-h-screen w-full overflow-x-hidden">
       {!shouldHideNavbar && <Navbar cartCount={cartCount} wishlistCount={wishlistIds.size} />}
       <Toaster position="top-right" />
 

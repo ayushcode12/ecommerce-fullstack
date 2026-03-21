@@ -313,7 +313,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                               setIsProfileOpen(false)
                               navigate("/admin")
                             }}
-                            className={menuItemClass}
+                            className={`${menuItemClass} border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100`}
                           >
                             <Shield size={16} />
                             Admin Panel

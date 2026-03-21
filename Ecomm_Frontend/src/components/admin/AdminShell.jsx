@@ -35,7 +35,7 @@ const AdminShell = ({ title, subtitle, actions = null, children }) => {
                     `inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition ${
                       isActive
                         ? "border border-rose-200 bg-rose-50 text-rose-700"
-                        : "border border-transparent text-slate-700 hover:border-[var(--border)] hover:bg-white"
+                        : "border border-slate-200 bg-white text-slate-800 hover:border-[var(--border)] hover:bg-slate-50"
                     }`
                   }
                 >
