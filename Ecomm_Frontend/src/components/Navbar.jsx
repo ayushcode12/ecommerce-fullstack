@@ -103,7 +103,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
     "relative inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/90 bg-white text-slate-600 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md sm:h-10 sm:w-10 md:h-11 md:w-11"
 
   const menuItemClass =
-    "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-teal-700"
+    "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-50 hover:text-teal-700 !text-slate-800"
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 shadow-[0_6px_18px_rgba(15,23,42,0.06)] backdrop-blur-xl">
@@ -259,9 +259,9 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 z-50 mt-2 w-[min(92vw,260px)] rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl">
+                  <div className="absolute right-0 z-50 mt-2 w-[min(92vw,260px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl" style={{ color: '#1e293b' }}>
                     <div className="mb-1 rounded-xl bg-slate-50 px-3 py-2">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-600">Account</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-700">Account</p>
                       <p className="text-sm font-semibold text-slate-900">{isAdmin ? "Administrator" : "User Menu"}</p>
                     </div>
 
