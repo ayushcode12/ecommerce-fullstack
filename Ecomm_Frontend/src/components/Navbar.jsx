@@ -259,10 +259,10 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 z-50 mt-2 w-[min(92vw,260px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl">
+                  <div className="absolute right-0 z-50 mt-2 w-[min(92vw,260px)] rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl">
                     <div className="mb-1 rounded-xl bg-slate-50 px-3 py-2">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">Account</p>
-                      <p className="text-sm font-semibold text-slate-800">{isAdmin ? "Administrator" : "User Menu"}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-600">Account</p>
+                      <p className="text-sm font-semibold text-slate-900">{isAdmin ? "Administrator" : "User Menu"}</p>
                     </div>
 
                     {isLoggedIn ? (
@@ -313,7 +313,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                               setIsProfileOpen(false)
                               navigate("/admin")
                             }}
-                            className={`${menuItemClass} border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100`}
+                            className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 hover:text-teal-700"
                           >
                             <Shield size={16} />
                             Admin Panel
@@ -327,7 +327,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                             setIsProfileOpen(false)
                             handleLogout()
                           }}
-                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
                         >
                           <LogOut size={16} />
                           Logout
