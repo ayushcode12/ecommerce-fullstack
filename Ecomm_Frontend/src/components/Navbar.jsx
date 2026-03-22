@@ -259,7 +259,7 @@ function Navbar({ cartCount = 0, wishlistCount = 0 }) {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute -left-60 z-50 mt-2 w-[min(75vw,280px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl sm:-left-48 md:left-auto md:right-0" style={{ color: '#1e293b' }}>
+                  <div className="absolute left-1/2 -translate-x-1/2 z-50 mt-2 w-[min(85vw,280px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl md:left-auto md:right-0 md:translate-x-0" style={{ color: '#1e293b' }}>
                     <div className="mb-1 rounded-xl bg-slate-50 px-3 py-2">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-700">Account</p>
                       <p className="text-sm font-semibold text-slate-900">{isAdmin ? "Administrator" : "User Menu"}</p>
