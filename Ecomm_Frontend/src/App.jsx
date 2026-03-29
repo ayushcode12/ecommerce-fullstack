@@ -13,6 +13,7 @@ import ProductDetails from './pages/ProductDetails'
 import CategoryPage from './pages/CategoryPage'
 import AddAddress from './pages/AddAddress'
 import Wishlist from './pages/Wishlist'
+import NotFound from './pages/NotFound'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
 import AdminCategories from './pages/admin/AdminCategories'
@@ -223,6 +224,8 @@ function App() {
             <AdminOrders />
           </ProtectedRoute>
         } />
+
+        <Route path="*" element={<NotFound />} />
 
       </Routes>
       {!shouldHideNavbar && <Footer />}
