@@ -141,10 +141,25 @@ const Orders = ({ refreshCartCount }) => {
         {loadingOrders ? (
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="surface-card animate-pulse rounded-2xl p-5">
-                <div className="h-5 w-48 rounded bg-slate-200" />
-                <div className="mt-3 h-3 w-full rounded bg-slate-200" />
-                <div className="mt-4 h-4 w-64 rounded bg-slate-200" />
+              <div key={index} className="surface-card rounded-2xl p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-2">
+                    <div className="skeleton h-5 w-40" />
+                    <div className="skeleton h-3 w-52" />
+                  </div>
+                  <div className="skeleton h-6 w-24 rounded-full" />
+                </div>
+                <div className="skeleton mt-4 h-2 w-full rounded-full" />
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div className="skeleton h-3 w-full" />
+                  <div className="skeleton h-3 w-full" />
+                  <div className="skeleton h-3 w-full" />
+                  <div className="skeleton h-3 w-full" />
+                </div>
+                <div className="mt-4 flex justify-between gap-2 border-t border-[var(--border)] pt-4">
+                  <div className="skeleton h-3 w-32" />
+                  <div className="skeleton h-3 w-24" />
+                </div>
               </div>
             ))}
           </div>

@@ -259,15 +259,15 @@ const Products = ({ refreshCartCount, cartQuantities, wishlistIds, refreshWishli
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
-                  className="surface-card animate-pulse rounded-3xl border border-[var(--border)] p-5"
+                  className="surface-card rounded-3xl border border-[var(--border)] p-5"
                 >
-                  <div className="h-44 rounded-2xl bg-slate-200" />
-                  <div className="mt-4 h-4 w-24 rounded bg-slate-200" />
-                  <div className="mt-2 h-5 w-3/4 rounded bg-slate-200" />
-                  <div className="mt-2 h-4 rounded bg-slate-200" />
+                  <div className="skeleton h-44 rounded-2xl" />
+                  <div className="skeleton mt-4 h-4 w-24" />
+                  <div className="skeleton mt-2 h-5 w-3/4" />
+                  <div className="skeleton mt-2 h-4" />
                   <div className="mt-6 flex items-center justify-between">
-                    <div className="h-7 w-24 rounded bg-slate-200" />
-                    <div className="h-10 w-20 rounded-xl bg-slate-200" />
+                    <div className="skeleton h-7 w-24" />
+                    <div className="skeleton h-10 w-20 rounded-xl" />
                   </div>
                 </div>
               ))}

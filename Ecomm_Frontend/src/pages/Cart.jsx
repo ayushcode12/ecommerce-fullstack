@@ -249,18 +249,31 @@ const Cart = ({ refreshCartCount }) => {
         {loadingCart ? (
           <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
             <div className="order-2 space-y-4 lg:order-1">
+              <div className="surface-card rounded-2xl p-5">
+                <div className="skeleton h-5 w-52" />
+                <div className="skeleton mt-3 h-4 w-full" />
+                <div className="skeleton mt-2 h-4 w-3/4" />
+              </div>
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="surface-card animate-pulse rounded-2xl p-5">
-                  <div className="h-5 w-40 rounded bg-slate-200" />
-                  <div className="mt-2 h-4 w-28 rounded bg-slate-200" />
-                  <div className="mt-6 h-10 w-32 rounded bg-slate-200" />
+                <div key={index} className="surface-card rounded-2xl p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="skeleton h-14 w-14 rounded-xl" />
+                      <div className="space-y-2">
+                        <div className="skeleton h-4 w-44" />
+                        <div className="skeleton h-3 w-28" />
+                      </div>
+                    </div>
+                    <div className="skeleton h-8 w-20" />
+                  </div>
                 </div>
               ))}
             </div>
-            <div className="surface-card animate-pulse rounded-3xl p-6">
-              <div className="h-6 w-44 rounded bg-slate-200" />
-              <div className="mt-4 h-4 w-full rounded bg-slate-200" />
-              <div className="mt-2 h-4 w-4/5 rounded bg-slate-200" />
+            <div className="surface-card rounded-3xl p-6">
+              <div className="skeleton h-6 w-44" />
+              <div className="skeleton mt-4 h-4 w-full" />
+              <div className="skeleton mt-2 h-4 w-4/5" />
+              <div className="skeleton mt-6 h-10 w-full rounded-xl" />
             </div>
           </div>
         ) : cartItems.length === 0 ? (
