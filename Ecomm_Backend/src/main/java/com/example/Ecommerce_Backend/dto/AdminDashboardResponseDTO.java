@@ -17,6 +17,8 @@ public class AdminDashboardResponseDTO {
     private Long totalUsers;
     private Long totalProducts;
     private Long totalOrders;
+    private Long lowStockProducts;
+    private Long outOfStockProducts;
 
     private Long pendingOrders;
     private Long confirmedOrders;

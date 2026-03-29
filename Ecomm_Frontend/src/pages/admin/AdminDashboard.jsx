@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
+  AlertTriangle,
   Boxes,
   CircleDollarSign,
   Clock3,
@@ -63,6 +64,10 @@ const AdminDashboard = () => {
       ]
     : []
 
+  const lowStockProducts = Number(dashboard?.lowStockProducts || 0)
+  const outOfStockProducts = Number(dashboard?.outOfStockProducts || 0)
+  const hasStockAlert = lowStockProducts > 0 || outOfStockProducts > 0
+
   return (
     <AdminShell
       title="Dashboard"
@@ -94,6 +99,37 @@ const AdminDashboard = () => {
               </div>
             ))}
           </section>
+
+          {hasStockAlert && (
+            <section className="surface-card rounded-2xl border-amber-200 bg-amber-50 p-4 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-amber-700">
+                    <AlertTriangle size={13} />
+                    Inventory Alert
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {outOfStockProducts > 0 && (
+                      <span className="inline-flex rounded-full border border-rose-300 bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+                        Out of stock: {outOfStockProducts}
+                      </span>
+                    )}
+                    {lowStockProducts > 0 && (
+                      <span className="inline-flex rounded-full border border-amber-300 bg-white px-3 py-1 text-xs font-semibold text-amber-700">
+                        Low stock (1-5): {lowStockProducts}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate("/admin/products")}
+                  className="w-full rounded-xl border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-100 sm:w-auto"
+                >
+                  Review inventory
+                </button>
+              </div>
+            </section>
+          )}
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
             <div className="surface-card rounded-2xl p-5">

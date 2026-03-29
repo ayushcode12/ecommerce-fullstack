@@ -19,4 +19,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     long countByCategoryId(Long categoryId);
 
+    long countByStockQuantityLessThanEqual(Integer stockQuantity);
+
+    long countByStockQuantity(Integer stockQuantity);
+
 }

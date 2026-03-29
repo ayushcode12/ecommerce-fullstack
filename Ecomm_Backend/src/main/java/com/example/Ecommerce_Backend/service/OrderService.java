@@ -34,6 +34,7 @@ public class OrderService {
     private static final BigDecimal SHIPPING_FEE = BigDecimal.valueOf(49);
     private static final BigDecimal PLATFORM_FEE = BigDecimal.valueOf(9);
     private static final BigDecimal TAX_RATE = BigDecimal.valueOf(0.05);
+    private static final int LOW_STOCK_THRESHOLD = 5;
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
@@ -441,6 +442,11 @@ public class OrderService {
         long totalUsers = userRepository.count();
         long totalProducts = productRepository.count();
         long totalOrders = orderRepository.count();
+        long outOfStockProducts = productRepository.countByStockQuantity(0);
+        long lowStockProducts = Math.max(
+                0,
+                productRepository.countByStockQuantityLessThanEqual(LOW_STOCK_THRESHOLD) - outOfStockProducts
+        );
 
         long pendingOrders = orderRepository.countByStatus(OrderStatus.PENDING);
         long confirmedOrders = orderRepository.countByStatus(OrderStatus.CONFIRMED);
@@ -461,6 +467,8 @@ public class OrderService {
                 .totalUsers(totalUsers)
                 .totalProducts(totalProducts)
                 .totalOrders(totalOrders)
+                .lowStockProducts(lowStockProducts)
+                .outOfStockProducts(outOfStockProducts)
                 .pendingOrders(pendingOrders)
                 .confirmedOrders(confirmedOrders)
                 .shippedOrders(shippedOrders)
